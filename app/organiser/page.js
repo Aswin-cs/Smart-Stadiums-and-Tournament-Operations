@@ -21,6 +21,7 @@ export default function OrganiserPage() {
   const [climate, setClimate] = useState('CLEAR');
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [activeGateManage, setActiveGateManage] = useState(null);
   const [isAutoSimulating, setIsAutoSimulating] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
@@ -467,6 +468,30 @@ export default function OrganiserPage() {
     }
   };
 
+  const handleEmergencyOpenAllGates = () => {
+    // SOP: Open all gates to maximize unidirectional flow and relieve critical congestion
+    setGates(prevGates => prevGates.map(g => ({
+      ...g,
+      density: Math.min(g.density, 25), // Rapidly relieve density
+      status: 'OPEN',
+      flow: 'Rapid Egress'
+    })));
+
+    setIncidents(prev => [
+      { id: Date.now(), title: "Emergency All-Gate Egress Initiated", location: "All Gates", type: "CRITICAL", time: "Just now", shortLabel: "! EVAC" },
+      ...prev
+    ]);
+
+    setNotifications(prev => [...prev, {
+      id: Date.now(),
+      title: "Protocol Active: Crowd Management",
+      text: "Unidirectional emergency flow initiated. All gates open to relieve crush conditions.",
+      time: 'Just now'
+    }]);
+  };
+
+  const hasHighDensity = gates.some(g => g.density >= 80);
+
   return (
     <div className={styles.wrapper}>
       {/* Background */}
@@ -478,23 +503,25 @@ export default function OrganiserPage() {
 
       {/* Nav */}
       <nav className={styles.nav}>
-        <div className={styles.navControlGroup}>
-          <Link href="/" className={styles.navBack} id="nav-back-home" aria-label="Back to Home">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            <span className={styles.navBackText}>Back</span>
-          </Link>
-          <div className={styles.navHoverLabel}>Back to Home</div>
-        </div>
-        
-        <div className={styles.navControlGroup}>
-          <div className={styles.navBrand}>
-            <img src="/trophy.svg" alt="Website Logo" style={{ width: '28px', height: '28px', marginRight: '8px' }} />
-            <span className={styles.navBrandText}>FIFA WC 2026</span>
+        <div className={styles.navLeft}>
+          <div className={styles.navControlGroup}>
+            <Link href="/" className={styles.navBack} id="nav-back-home" aria-label="Back to Home">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span className={styles.navBackText}>Back</span>
+            </Link>
+            <div className={styles.navHoverLabel}>Back to Home</div>
           </div>
-          <div className={styles.navHoverLabel}>Tournament</div>
-        </div>
+          
+          <div className={styles.navControlGroup}>
+            <div className={styles.navBrand}>
+              <img src="/trophy.svg" alt="Website Logo" style={{ width: '20px', height: '20px', marginRight: '8px' }} />
+              <span className={styles.navBrandText}>FIFA WC 2026</span>
+            </div>
+            <div className={styles.navHoverLabel}>Tournament</div>
+          </div>
 
-        <div className={styles.navBadge}>STADIUM OPS</div>
+          <div className={styles.navBadge}>STADIUM OPS</div>
+        </div>
         
         <div className={styles.navActions}>
           {session ? (
@@ -613,10 +640,20 @@ export default function OrganiserPage() {
             </div>
           )}
 
-          <button className={styles.actionBtnPrimary}>
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-            Deploy Staff
-          </button>
+          {hasHighDensity ? (
+            <button 
+              className={`${styles.actionBtnPrimary} ${styles.btnEmergency}`} 
+              onClick={handleEmergencyOpenAllGates}
+            >
+              <FontAwesomeIcon icon={faExclamationTriangle} style={{ marginRight: '8px' }} />
+              Open All Gates
+            </button>
+          ) : (
+            <button className={styles.actionBtnPrimary}>
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16" style={{ marginRight: '8px' }}><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              Deploy Staff
+            </button>
+          )}
         </div>
       </header>
 
@@ -692,15 +729,38 @@ export default function OrganiserPage() {
               </div>
               <div className={styles.gateList}>
                 {gates.map((g, i) => (
-                  <div key={i} className={styles.gateItem}>
-                    <div className={styles.gateInfo}>
-                      <p className={styles.gateTitle}>{g.id}</p>
-                      <p className={styles.gateFlow}>Flow: {g.flow}</p>
+                  <div key={i} className={styles.gateItemWrapper}>
+                    <div className={styles.gateItem}>
+                      <div className={styles.gateInfo}>
+                        <p className={styles.gateTitle}>{g.id}</p>
+                        <p className={styles.gateFlow}>Flow: {g.flow}</p>
+                      </div>
+                      <div className={styles.gateActions}>
+                        <span className={styles.statusBadge} data-status={g.status}>{g.status}</span>
+                        <button 
+                          className={styles.gateBtn}
+                          onClick={() => setActiveGateManage(activeGateManage === g.id ? null : g.id)}
+                        >
+                          {activeGateManage === g.id ? 'Close' : 'Manage'}
+                        </button>
+                      </div>
                     </div>
-                    <div className={styles.gateActions}>
-                      <span className={styles.statusBadge} data-status={g.status}>{g.status}</span>
-                      <button className={styles.gateBtn}>Manage</button>
-                    </div>
+                    {activeGateManage === g.id && (
+                      <div className={styles.inlineGateManager}>
+                        <div className={styles.sliderHeader}>
+                          <span className={styles.sliderLabel}>Density</span>
+                          <span className={styles.sliderValue}>{g.density}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          className={styles.sliderInput}
+                          min="0"
+                          max="100"
+                          value={g.density}
+                          onChange={(e) => handleUpdateGateDensity(g.id, parseInt(e.target.value))}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

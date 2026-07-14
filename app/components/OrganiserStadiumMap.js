@@ -56,11 +56,14 @@ export default function OrganiserStadiumMap({ gates, incidents = [], climate = '
           if (inc.type === "WARNING") color = "#f59e0b";
           if (inc.type === "CRITICAL") color = "#ef4444";
 
+          const ix = inc.x ?? 450;
+          const iy = inc.y ?? 260;
+
           return (
             <g key={inc.id} className={styles.incidentBlip}>
-              <circle cx={inc.x} cy={inc.y} r={isMobile ? "24" : "12"} fill={color} />
-              <circle cx={inc.x} cy={inc.y} r={isMobile ? "40" : "24"} fill="none" stroke={color} strokeWidth="3" className={styles.pulseAnim} />
-              <text x={inc.x} y={inc.y - (isMobile ? 32 : 18)} fill={color} fontSize={isMobile ? "20" : "12"} fontWeight="800" textAnchor="middle">{inc.shortLabel}</text>
+              <circle cx={ix} cy={iy} r={isMobile ? "24" : "12"} fill={color} />
+              <circle cx={ix} cy={iy} r={isMobile ? "40" : "24"} fill="none" stroke={color} strokeWidth="3" className={styles.pulseAnim} />
+              <text x={ix} y={iy - (isMobile ? 32 : 18)} fill={color} fontSize={isMobile ? "20" : "12"} fontWeight="800" textAnchor="middle">{inc.shortLabel}</text>
             </g>
           );
         })}

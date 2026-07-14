@@ -19,13 +19,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Layer 2 — Trophy on right (decorative, above bg, below content) */}
-      <div className={styles.trophyDecor}>
-        <img src="/trophy.svg" alt="FIFA World Cup Trophy" className={styles.trophyDecorImg} />
-        <div className={styles.trophyDecorGlow}></div>
-      </div>
-
       {/* Layer 3 — All content (above trophy) */}
+
+      {/* Top Trophy Header */}
+      <div className={styles.trophyHeader}>
+        <img src="/trophy.svg" alt="FIFA World Cup Trophy" className={styles.trophyHeaderImg} />
+      </div>
 
       {/* Top Badge */}
       <div className={styles.topBadge}>
