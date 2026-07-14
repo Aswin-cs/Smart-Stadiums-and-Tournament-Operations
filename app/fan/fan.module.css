@@ -1,0 +1,2345 @@
+/* =============================================
+   FAN PAGE — FIFA 2026 Theme
+   ============================================= */
+
+.wrapper {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #060a14 0%, #0a0e1a 35%, #0d1b3e 70%, #0a1a0d 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ---- Background ---- */
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgGlow1 {
+  position: absolute;
+  top: -10%;
+  left: -20%;
+  width: 70vw;
+  height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,71,42,0.2) 0%, transparent 65%);
+}
+
+.bgGlow2 {
+  position: absolute;
+  bottom: 10%;
+  right: -15%;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(67,97,238,0.1) 0%, transparent 65%);
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ---- Nav ---- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(6,10,20,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.navBack {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--fifa-silver);
+  transition: color 0.2s, gap 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.navBack:hover {
+  color: var(--fifa-white);
+  gap: 12px;
+}
+
+.navBack svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s;
+}
+
+.navBack:hover svg {
+  transform: translateX(-3px);
+}
+
+.navBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  color: var(--fifa-white);
+}
+
+.navLogo {
+  font-size: 1.3rem;
+  animation: rotate-slow 8s linear infinite;
+  display: inline-block;
+}
+
+.navBadge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--fifa-pitch-light);
+  background: rgba(26,71,42,0.25);
+  border: 1px solid rgba(26,71,42,0.6);
+  border-radius: 100px;
+  padding: 5px 14px;
+}
+
+/* ---- Hero Banner ---- */
+.heroBanner {
+  position: relative;
+  z-index: 1;
+  padding: 60px 32px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  animation: fadeInUp 0.8s ease both;
+}
+
+.heroContent {
+  max-width: 640px;
+}
+
+.heroPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--fifa-pitch-light);
+  background: rgba(26,71,42,0.2);
+  border: 1px solid rgba(45,106,79,0.4);
+  border-radius: 100px;
+  padding: 7px 16px;
+  margin-bottom: 20px;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  background: #4ade80;
+  border-radius: 50%;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(56px, 10vw, 110px);
+  line-height: 0.9;
+  color: var(--fifa-white);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+
+.heroTitleAccent {
+  background: linear-gradient(135deg, #2d6a4f, #4ade80, #2d6a4f);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+.heroSub {
+  font-size: 1.05rem;
+  color: var(--fifa-silver);
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+.heroStats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px 32px;
+  backdrop-filter: blur(16px);
+  width: fit-content;
+}
+
+.statBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 28px;
+}
+
+.statNum {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  color: var(--fifa-gold);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.statLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--fifa-silver);
+  text-transform: uppercase;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.08);
+}
+
+/* ---- Main Content ---- */
+.main {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* ---- Section ---- */
+.section {
+  animation: fadeInUp 0.8s ease both;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  color: var(--fifa-silver);
+  text-transform: uppercase;
+}
+
+.sectionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  flex-shrink: 0;
+}
+
+.seeAllBtn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--fifa-silver);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.seeAllBtn:hover {
+  border-color: var(--fifa-gold);
+  color: var(--fifa-gold);
+}
+
+/* ---- Match Cards ---- */
+.matchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.matchCard {
+  position: relative;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 20px;
+  transition: transform 0.25s ease, border-color 0.25s, box-shadow 0.25s;
+  overflow: hidden;
+}
+
+.matchCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.matchCardLive {
+  border-color: rgba(74,222,128,0.3) !important;
+  background: rgba(26,71,42,0.1) !important;
+  box-shadow: 0 0 30px rgba(74,222,128,0.08);
+}
+
+.liveTag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #4ade80;
+  background: rgba(74,222,128,0.15);
+  border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 100px;
+  padding: 4px 10px;
+}
+
+.livePulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pulse-glow 1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.matchGroup {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--fifa-gold);
+  margin-bottom: 16px;
+}
+
+.matchTeams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.matchTeam {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.teamFlag {
+  font-size: 2rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+.teamCode {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  color: var(--fifa-white);
+}
+
+.matchScore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.matchVs {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.1em;
+}
+
+.scoreDisplay {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: #4ade80;
+  letter-spacing: 0.05em;
+}
+
+.scoreSep {
+  color: rgba(255,255,255,0.4);
+  margin: 0 4px;
+}
+
+.matchMeta {
+  display: flex;
+  gap: 14px;
+  font-size: 0.72rem;
+  color: var(--fifa-silver);
+  margin-bottom: 8px;
+}
+
+.matchStadium {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Stadium Cards ---- */
+.stadiumGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.stadiumCard {
+  position: relative;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 20px 20px 20px 16px;
+  display: flex;
+  gap: 14px;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s;
+  cursor: pointer;
+}
+
+.stadiumCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent), 0.3);
+}
+
+.stadiumCard::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 14px 0 0 14px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.stadiumCard:hover::after {
+  opacity: 1;
+}
+
+.stadiumEmoji {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stadiumInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stadiumName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--fifa-white);
+  line-height: 1.3;
+}
+
+.stadiumCity {
+  font-size: 0.72rem;
+  color: var(--fifa-silver);
+}
+
+.stadiumCap {
+  font-size: 0.68rem;
+  color: var(--fifa-gold);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.stadiumBar {
+  display: none;
+}
+
+/* ---- Tips Grid ---- */
+.tipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.tipCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 22px 20px;
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.tipCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(201,162,39,0.3);
+}
+
+.tipIcon {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.tipTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--fifa-white);
+  margin-bottom: 6px;
+}
+
+.tipDesc {
+  font-size: 0.75rem;
+  color: var(--fifa-silver);
+  line-height: 1.6;
+}
+
+/* ---- Switch CTA ---- */
+.switchCta {
+  background: linear-gradient(135deg, rgba(67,97,238,0.1), rgba(67,97,238,0.04));
+  border: 1px solid rgba(67,97,238,0.2);
+  border-radius: 20px;
+  padding: 40px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ctaContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ctaLabel {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  color: var(--fifa-accent-light);
+}
+
+.ctaTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--fifa-white);
+  letter-spacing: 0.03em;
+}
+
+.ctaDesc {
+  font-size: 0.85rem;
+  color: var(--fifa-silver);
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--fifa-accent), #5a7ff8);
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.05em;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: fit-content;
+}
+
+.ctaBtn:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(67,97,238,0.4);
+}
+
+.ctaIcon {
+  font-size: 4rem;
+  opacity: 0.3;
+  flex-shrink: 0;
+}
+
+/* ---- Footer ---- */
+.footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 30px 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer p {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.05em;
+}
+
+.footerSub {
+  font-size: 0.65rem !important;
+  color: rgba(201,162,39,0.4) !important;
+  letter-spacing: 0.15em !important;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .heroBanner {
+    padding: 40px 20px 30px;
+  }
+
+  .heroStats {
+    padding: 16px 20px;
+  }
+
+  .statBox {
+    padding: 0 16px;
+  }
+
+  .main {
+    padding: 0 20px 60px;
+  }
+
+  .switchCta {
+    flex-direction: column;
+    text-align: center;
+    padding: 32px 24px;
+  }
+
+  .ctaBtn {
+    align-self: center;
+  }
+
+  .ctaIcon {
+    display: none;
+  }
+
+  .nav {
+    padding: 14px 20px;
+  }
+}
+
+/* =============================================
+   MY TICKET — customisable ticket section
+   ============================================= */
+
+/* Section header extras */
+.ticketActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.resetBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  box-shadow: 0 3px 0px rgba(255, 255, 255, 0.07);
+  transition: transform 0.1s, box-shadow 0.1s, color 0.2s, border-color 0.2s;
+}
+.resetBtn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--fifa-white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0px rgba(255, 255, 255, 0.1);
+}
+.resetBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 0px 0px rgba(255, 255, 255, 0.07);
+}
+
+.saveBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--fifa-gold);
+  border: none;
+  color: #000;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 0px rgba(180, 140, 20, 1);
+  transition: transform 0.1s, box-shadow 0.1s, letter-spacing 0.25s ease,
+              background-color 0.35s, color 0.35s;
+  position: relative;
+  overflow: hidden;
+}
+.saveBtn::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -120%;
+  width: 60%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+.saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px rgba(180, 140, 20, 1);
+  letter-spacing: 0.14em;
+}
+.saveBtn:hover::after {
+  animation: fieldSweep 0.55s ease forwards;
+}
+.saveBtn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0px 0px rgba(180, 140, 20, 1);
+  letter-spacing: 0.08em;
+}
+.saveBtnSuccess {
+  background-color: #22c55e !important;
+  box-shadow: 0 4px 0px #15803d !important;
+  color: #fff !important;
+  letter-spacing: 0.14em !important;
+  animation: savePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes savePop {
+  0%   { transform: scale(0.92) translateY(0); }
+  60%  { transform: scale(1.06) translateY(-2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+/* ---- Layout: preview + editor side-by-side ---- */
+.ticketLayout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .ticketLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Ticket Preview ---- */
+.ticketPreviewWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ticketHint {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.ticketPreview {
+  display: flex;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--tk-border, rgba(99,102,241,0.4));
+  background: var(--tk-bg, rgba(99,102,241,0.08));
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 24px 64px rgba(0,0,0,0.5),
+    0 0 60px var(--tk-bg, rgba(99,102,241,0.06));
+  transition: border-color 0.4s, box-shadow 0.4s, background 0.4s, transform 0.4s;
+  min-height: 220px;
+  position: relative;
+}
+
+.ticketPreviewSaved {
+  animation: ticketSaveFlash 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes ticketSaveFlash {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 24px 64px rgba(0,0,0,0.5), 0 0 60px rgba(99,102,241,0.06); }
+  25%  { transform: scale(1.025); box-shadow: 0 0 0 3px rgba(74,222,128,0.7),  0 24px 64px rgba(0,0,0,0.5), 0 0 80px rgba(74,222,128,0.4); }
+  55%  { transform: scale(0.985); box-shadow: 0 0 0 2px rgba(74,222,128,0.4),  0 24px 64px rgba(0,0,0,0.5), 0 0 60px rgba(74,222,128,0.2); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 24px 64px rgba(0,0,0,0.5), 0 0 60px rgba(99,102,241,0.06); }
+}
+
+/* Stub (left perforated strip) */
+.ticketStub {
+  width: 64px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.25);
+  border-right: 2px dashed rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 10px;
+  gap: 16px;
+}
+
+.stubVertText {
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.25);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  text-transform: uppercase;
+}
+
+.stubBarcode {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 50px;
+}
+
+.barcodeBar {
+  width: 2px;
+  background: rgba(255,255,255,0.22);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* Main body */
+.ticketBody {
+  flex: 1;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ticketTopRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ticketTournament {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticketBall {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+  animation: rotate-slow 8s linear infinite;
+  display: inline-block;
+}
+
+.ticketTournamentName {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.ticketCategoryBadge {
+  display: inline-block;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+/* Seat block (Gate / Row / Seat) */
+.ticketSeatBlock {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.seatBlockItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 14px;
+  gap: 2px;
+}
+
+.seatBlockLabel {
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+}
+
+.seatBlockVal {
+  font-size: 1.3rem;
+  font-weight: 900;
+  font-family: var(--font-display);
+  color: var(--tk-accent, #818cf8);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.seatBlockSep {
+  width: 1px;
+  background: rgba(255,255,255,0.07);
+  align-self: stretch;
+}
+
+/* Match name */
+.ticketMatchRow {
+  display: flex;
+  align-items: center;
+}
+
+.ticketMatchText {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  color: var(--fifa-white);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Info row */
+.ticketInfoRow {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.ticketInfoItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.infoLabel {
+  font-size: 0.8rem;
+}
+
+/* Perforated divider */
+.ticketDivider {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 2px -24px;
+  position: relative;
+}
+
+.ticketCircleL,
+.ticketCircleR {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #060a14;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.ticketDashes {
+  flex: 1;
+  border-top: 1.5px dashed rgba(255,255,255,0.1);
+}
+
+/* Footer row */
+.ticketFooterRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ticketHolder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.holderLabel {
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+}
+
+.holderName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--fifa-white);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.ticketBarcode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.barcodeText {
+  font-size: 0.55rem;
+  font-family: monospace;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.08em;
+}
+
+/* ---- Ticket Editor ---- */
+.ticketEditor {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* Tab bar */
+.editorTabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(0,0,0,0.15);
+}
+
+.editorTab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.editorTab:hover {
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.04);
+}
+
+.editorTabActive {
+  color: #f9d450 !important;
+  border-bottom-color: #f9d450 !important;
+  background: rgba(249,212,80,0.04) !important;
+}
+
+.editorFields {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 295px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for editorFields */
+.editorFields::-webkit-scrollbar {
+  width: 6px;
+}
+.editorFields::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.editorFields::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.editorFields::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.fieldLabel {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+}
+
+.fieldInput,
+.fieldSelect {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: var(--fifa-white);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 10px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fieldInput:focus,
+.fieldSelect:focus {
+  border-color: rgba(249,212,80,0.5);
+  box-shadow: 0 0 0 3px rgba(249,212,80,0.08);
+}
+
+.fieldSelect {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.35)' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.fieldSelect option {
+  background: #0d1b3e;
+  color: var(--fifa-white);
+}
+
+/* Category picker */
+.categoryPicker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.catBtn {
+  flex: 1;
+  min-width: 80px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  padding: 9px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.catBtn:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: var(--fifa-white);
+}
+
+.catBtnActive {
+  background: rgba(249,212,80,0.12) !important;
+  border-color: rgba(249,212,80,0.45) !important;
+  color: #f9d450 !important;
+  box-shadow: 0 4px 12px rgba(249,212,80,0.1);
+}
+
+/* Info note */
+.fieldNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 12px 14px;
+  line-height: 1.5;
+}
+
+/* ---- Animations ---- */
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.3); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* =============================================
+   STADIUM MOCKUP
+   ============================================= */
+
+.stadiumMockupBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(201,162,39,0.8);
+  background: rgba(201,162,39,0.08);
+  border: 1px solid rgba(201,162,39,0.2);
+  border-radius: 100px;
+  padding: 5px 14px;
+}
+
+.stadiumMockupWrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Night-specific styles */
+.stadiumNight {
+  background: #050d1a;
+  border-color: rgba(255,255,255,0.07);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    0 32px 80px rgba(0,0,0,0.6),
+    0 0 120px rgba(26,71,42,0.12);
+}
+
+.stadiumNight .stadiumGlow {
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(26,90,52,0.25) 0%, transparent 70%);
+}
+
+.stadiumNight .stadiumInfoCards {
+  background: rgba(5,10,22,0.9);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.stadiumNight .stadiumInfoCard {
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.stadiumNight .sic_label {
+  color: rgba(255,255,255,0.3);
+}
+
+.stadiumNight .sic_value {
+  color: var(--fifa-white);
+}
+
+/* Day-specific styles */
+.stadiumDay {
+  background: #f8fafc;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.02),
+    0 24px 64px rgba(0,0,0,0.15),
+    0 0 80px rgba(74,222,128,0.1);
+}
+
+.stadiumDay .stadiumGlow {
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(74,222,128,0.08) 0%, transparent 80%);
+}
+
+.stadiumDay .stadiumInfoCards {
+  background: #f1f5f9;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.stadiumDay .stadiumInfoCard {
+  border-right: 1px solid rgba(0,0,0,0.05);
+}
+
+.stadiumDay .sic_label {
+  color: #64748b;
+}
+
+.stadiumDay .sic_value {
+  color: #0f172a;
+}
+
+/* Day/Night floating toggles and Route controls wrapper */
+.stadiumControls {
+  position: relative;
+  padding: 16px 16px 0 16px;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.stadiumToggle {
+  display: flex;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 4px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+}
+
+.stadiumDay .stadiumToggle {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.toggleBtn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: var(--font-body);
+}
+
+.stadiumDay .toggleBtn {
+  color: #64748b;
+}
+
+.toggleBtn:hover {
+  color: #ffffff;
+}
+
+.stadiumDay .toggleBtn:hover {
+  color: #0f172a;
+}
+
+.toggleBtnActive {
+  background: #ffffff;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.stadiumNight .toggleBtnActive {
+  background: #f9d450;
+  color: #0a0e1a !important;
+}
+
+/* Route Toggle styling */
+.routeToggleBtn {
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  font-family: var(--font-body);
+  transition: all 0.25s ease;
+}
+
+.stadiumDay .routeToggleBtn {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(0,0,0,0.08);
+  color: #475569;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.routeToggleBtn:hover {
+  background: rgba(0,0,0,0.8);
+  color: #ffffff;
+}
+
+.stadiumDay .routeToggleBtn:hover {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.routeToggleBtnActive {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border-color: rgba(16,185,129,0.3) !important;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3) !important;
+}
+
+
+/* ambient glow */
+.stadiumGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.4s ease;
+}
+
+.stadiumSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Info cards overlaid at bottom */
+.stadiumInfoCards {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 0;
+  backdrop-filter: blur(12px);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.stadiumInfoCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+}
+
+.stadiumInfoCard:last-child {
+  border-right: none;
+}
+
+.sic_label {
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.sic_value {
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+/* Gate SVG Group styles & Animations */
+.gateGroup {
+  outline: none;
+  cursor: pointer;
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gateGroup:hover {
+  transform: scale(1.25);
+}
+
+.gateBase {
+  transition: fill 0.3s, stroke 0.3s;
+}
+
+.gateGroup text {
+  pointer-events: none;
+}
+
+/* Pulsing outer ring animation for selected Gate */
+.gatePulseRing {
+  transform-origin: center;
+  animation: pulseOuterRing 2s infinite ease-out;
+}
+
+@keyframes pulseOuterRing {
+  0% {
+    r: 13px;
+    opacity: 0.85;
+    stroke-width: 1.5px;
+  }
+  50% {
+    opacity: 0.45;
+    stroke-width: 2.5px;
+  }
+  100% {
+    r: 22px;
+    opacity: 0;
+    stroke-width: 0.5px;
+  }
+}
+
+/* Seating Route Pathing */
+.routeLine {
+  stroke-dasharray: 8, 6;
+  animation: routeMarch 1.8s linear infinite;
+  filter: drop-shadow(0 2px 4px rgba(16,185,129,0.3));
+}
+
+.routeLineShadow {
+  stroke-dasharray: 8, 6;
+  animation: routeMarch 1.8s linear infinite;
+  opacity: 0.25;
+}
+
+@keyframes routeMarch {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.routeTargetGroup {
+  animation: targetFloat 3s ease-in-out infinite;
+}
+
+@keyframes targetFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.targetPulseRing {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: pulseTargetRing 2s infinite ease-out;
+}
+
+@keyframes pulseTargetRing {
+  0% {
+    r: 10px;
+    opacity: 0.9;
+    stroke-width: 1.5px;
+  }
+  50% {
+    opacity: 0.4;
+    stroke-width: 2.5px;
+  }
+  100% {
+    r: 24px;
+    opacity: 0;
+    stroke-width: 0.5px;
+  }
+}
+
+.targetBadge {
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));
+  transition: fill 0.4s ease;
+}
+
+@media (max-width: 600px) {
+  .stadiumInfoCards {
+    flex-wrap: wrap;
+  }
+  .stadiumInfoCard {
+    flex: 0 0 50%;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .stadiumDay .stadiumInfoCard {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  .stadiumToggle {
+    padding: 2px;
+  }
+  .toggleBtn {
+    padding: 4px 8px;
+  }
+  .routeToggleBtn {
+    padding: 4px 10px;
+    height: 28px;
+  }
+}
+
+@keyframes chatIconBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30%       { transform: translateY(-5px) scale(1.15); }
+  60%       { transform: translateY(2px) scale(0.95); }
+}
+
+@keyframes chatPulseRing {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  80%  { transform: scale(1.7); opacity: 0; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+@keyframes chatWindowIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.93);
+    transform-origin: bottom right;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transform-origin: bottom right;
+  }
+}
+
+.chatButton {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
+  z-index: 9999;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
+  overflow: visible;
+}
+
+/* pulsing ring behind the button */
+.chatButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.chatButton:hover::before {
+  animation: chatPulseRing 1.2s ease-out infinite;
+}
+
+.chatButton .chatBtnIcon {
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatButton:hover .chatBtnIcon {
+  animation: chatIconBounce 0.55s ease;
+}
+
+.chatButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.7);
+}
+
+.chatButton:active {
+  transform: scale(0.93);
+}
+
+.chatButtonActive {
+  background: linear-gradient(135deg, #ef4444, #f43f5e) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4) !important;
+}
+
+.chatButtonActive::before {
+  background: linear-gradient(135deg, #ef4444, #f43f5e) !important;
+}
+
+/* Chat Window CSS */
+.chatWindow {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 360px;
+  height: 520px;
+  max-height: calc(100vh - 140px);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9998;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(13, 27, 42, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: chatWindowIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-origin: bottom right;
+}
+
+.chatHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chatHeaderInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chatAvatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.avatarOnline {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid rgba(13, 27, 42, 1);
+}
+
+.chatTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.chatSubtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.chatCloseBtn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.chatCloseBtn:hover {
+  color: white;
+}
+
+.chatMessagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chatMessagesContainer::-webkit-scrollbar {
+  width: 6px;
+}
+.chatMessagesContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chatMessagesContainer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+.chatMessagesContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.chatMessage {
+  display: flex;
+  gap: 8px;
+  max-width: 85%;
+}
+
+.chatMessageBot {
+  align-self: flex-start;
+}
+
+.chatMessageUser {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.msgAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.msgBubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.chatMessageBot .msgBubble {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  border-top-left-radius: 2px;
+}
+
+.chatMessageUser .msgBubble {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+  border-top-right-radius: 2px;
+}
+
+.msgText {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.msgTime {
+  display: block;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Typing indicator (3 bouncing dots) */
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%            { transform: translateY(-6px); opacity: 1; }
+}
+
+.typingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+}
+
+.typingIndicator span {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  animation: typingBounce 1.2s ease infinite;
+}
+
+.typingIndicator span:nth-child(2) { animation-delay: 0.2s; }
+.typingIndicator span:nth-child(3) { animation-delay: 0.4s; }
+
+.chatQuickChipsContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chatQuickChips {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.dragActive {
+  cursor: grabbing !important;
+  scroll-behavior: auto !important;
+}
+
+.chatQuickChips::-webkit-scrollbar {
+  height: 0px;
+}
+
+.chatScrollBtn {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 0.65rem;
+  transition: all 0.2s;
+}
+
+.chatScrollBtnLeft {
+  left: 6px;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.chatScrollBtnRight {
+  right: 6px;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.chatScrollBtn:hover {
+  background: rgba(59, 130, 246, 0.95);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
+}
+
+.chipBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 6px 14px 6px 10px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.chipBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.chipIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.chipBtn:hover .chipIcon {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.chatInputArea {
+  display: flex;
+  padding: 12px;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chatInput {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 8px 16px;
+  color: white;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chatInput:focus {
+  border-color: #8b5cf6;
+}
+
+.chatSendBtn {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.chatSendBtn:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+  .chatWindow {
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    z-index: 10000;
+  }
+}
+
+/* Auth Buttons */
+@keyframes fieldSweep {
+  0%   { left: -120%; skewX(-20deg); }
+  100% { left: 200%;  skewX(-20deg); }
+}
+
+@keyframes goldFlicker {
+  0%, 100% { text-shadow: 0 0 0px transparent; }
+  50%       { text-shadow: 0 0 6px rgba(255, 220, 80, 0.7); }
+}
+
+.authBtnLogin {
+  padding: 7px 18px;
+  background-color: var(--fifa-gold);
+  color: #000;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 0px rgba(180, 140, 20, 1);
+  transition: transform 0.1s, box-shadow 0.1s, letter-spacing 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floodlight sweep on hover */
+.authBtnLogin::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -120%;
+  width: 60%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: none;
+  pointer-events: none;
+}
+
+.authBtnLogin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px rgba(180, 140, 20, 1);
+  letter-spacing: 0.12em;
+}
+
+.authBtnLogin:hover::after {
+  animation: fieldSweep 0.55s ease forwards;
+}
+
+.authBtnLogin:active {
+  transform: translateY(4px);
+  box-shadow: 0 0px 0px rgba(180, 140, 20, 1);
+  letter-spacing: 0.05em;
+}
+
+.authBtnLogout {
+  padding: 7px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 0px rgba(255, 255, 255, 0.1);
+  transition: transform 0.1s, box-shadow 0.1s, letter-spacing 0.25s ease, background-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.authBtnLogout::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -120%;
+  width: 60%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(239, 68, 68, 0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.authBtnLogout:hover {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 6px 0px rgba(239, 68, 68, 0.35);
+  transform: translateY(-2px);
+  letter-spacing: 0.12em;
+}
+
+.authBtnLogout:hover::after {
+  animation: fieldSweep 0.55s ease forwards;
+}
+
+.authBtnLogout:active {
+  transform: translateY(4px);
+  box-shadow: 0 0px 0px rgba(239, 68, 68, 0.3);
+  letter-spacing: 0.05em;
+}
+
+.updateBtn {
+  padding: 7px 18px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 0px #1d4ed8;
+  transition: transform 0.1s, box-shadow 0.1s, letter-spacing 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.updateBtn::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -120%;
+  width: 60%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+
+.updateBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px #1d4ed8;
+  letter-spacing: 0.12em;
+}
+
+.updateBtn:hover::after {
+  animation: fieldSweep 0.55s ease forwards;
+}
+
+.updateBtn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0px 0px #1d4ed8;
+  letter-spacing: 0.05em;
+}
+
+.amenityLabel {
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(4px);
+  pointer-events: none;
+}
+
+.amenityGroup:hover .amenityLabel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stadiumControlGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.stadiumControlLabel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  margin-top: 8px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 20;
+}
+
+.stadiumControlGroup:hover .stadiumControlLabel {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.navActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navUserName {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mobileOnlyIcon {
+  display: none;
+}
+
+.navControlGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navHoverLabel {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .nav {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  
+  .navBackText,
+  .navBadge,
+  .navBrandText,
+  .navUserName,
+  .updateBtnText,
+  .authBtnText {
+    display: none;
+  }
+  
+  .navBrand {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .mobileOnlyIcon {
+    display: inline-block;
+  }
+  
+  .updateBtn,
+  .authBtnLogin,
+  .authBtnLogout {
+    padding: 8px;
+    min-width: 36px;
+    justify-content: center;
+  }
+
+  .navHoverLabel {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    margin-top: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 200;
+  }
+
+  .navControlGroup:hover .navHoverLabel {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
