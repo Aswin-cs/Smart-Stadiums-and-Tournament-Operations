@@ -39,6 +39,9 @@ function TestFanChat() {
       <button onClick={() => handleSendMessage('Where is the restroom?')} data-testid="send-direct-restroom">Send Direct Restroom</button>
       <button onClick={() => handleSendMessage('Where is the exit?')} data-testid="send-direct-exit">Send Direct Exit</button>
       <button onClick={() => handleSendMessage('Where is gate 5 seat 3?')} data-testid="send-direct-route">Send Direct Route</button>
+      <button onClick={() => handleSendMessage('burger pizza hotdog beer snack coffee')} data-testid="send-direct-all">All Amenities</button>
+      <button onClick={() => handleSendMessage('food gate')} data-testid="send-direct-gate-amenity">Gate Amenity</button>
+      <button onClick={() => handleSendMessage('food gate seat')} data-testid="send-direct-gate-seat-amenity">Gate Seat Amenity</button>
     </div>
   );
 }
@@ -97,6 +100,15 @@ describe('useFanChat', () => {
     await user.click(screen.getByTestId('send-direct-restroom'));
     await user.click(screen.getByTestId('send-direct-exit'));
     await user.click(screen.getByTestId('send-direct-route'));
+    
+    // Line 27: stadiumSection is null
+    document.getElementById.mockReturnValueOnce(null);
+    await user.click(screen.getByTestId('send-direct-all'));
+    
+    await user.click(screen.getByTestId('send-direct-gate-amenity'));
+    await user.click(screen.getByTestId('send-direct-gate-seat-amenity'));
+    
+    // Empty message
     await user.click(screen.getByText('Send'));
   });
 
@@ -118,5 +130,21 @@ describe('useFanChat', () => {
     
     expect(alertSpy).toHaveBeenCalledWith('Your limit is over. Please try again later.');
     alertSpy.mockRestore();
+  });
+
+  it('handles API 500 error fallback without data.error', async () => {
+    global.fetch.mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({})
+    });
+    
+    const user = userEvent.setup();
+    render(<TestFanChat />);
+    await user.click(screen.getByTestId('send-direct'));
+    
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    });
   });
 });
