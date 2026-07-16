@@ -3,7 +3,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 // In development, Next.js requires 'unsafe-eval' and 'unsafe-inline' for fast refresh.
 // In production, we remove them to harden the security score.
-const cspScriptSrc = isDev ? "'self' 'unsafe-eval' 'unsafe-inline'" : "'self'";
+const cspScriptSrc = isDev ? "'self' 'unsafe-eval' 'unsafe-inline'" : "'self' 'unsafe-inline'";
 
 const ContentSecurityPolicy = `
   default-src 'self';
