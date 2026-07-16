@@ -5,6 +5,28 @@ import Image from 'next/image';
 import { categoryColors } from '../lib/utils/ticket-colors';
 import TicketBarcode from './TicketBarcode';
 
+/**
+ * @typedef {Object} TicketData
+ * @property {string} category - The ticket category (e.g., 'Category 1').
+ * @property {string} gate - The gate number or name.
+ * @property {string|number} row - The row number or identifier.
+ * @property {string|number} seat - The seat number or identifier.
+ * @property {string} match - The match description or teams.
+ * @property {string} matchDate - The date and time of the match.
+ * @property {string} stadium - The name of the stadium.
+ * @property {string} section - The section identifier in the stadium.
+ * @property {string} [holderName] - The name of the ticket holder (optional).
+ * @property {string} barcode - The barcode string or identifier.
+ */
+
+/**
+ * Renders a visual preview of a ticket.
+ *
+ * @param {Object} props - The component props.
+ * @param {TicketData} props.ticket - The ticket data object.
+ * @param {boolean} [props.animating] - Whether the ticket is currently animating.
+ * @returns {JSX.Element} The rendered TicketPreview component.
+ */
 export default function TicketPreview({ ticket, animating }) {
   const c = categoryColors[ticket.category] || categoryColors.Standard;
 
