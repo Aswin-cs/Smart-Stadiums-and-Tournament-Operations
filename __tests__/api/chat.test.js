@@ -6,20 +6,32 @@ import { POST } from '@/app/api/chat/route';
 
 // Mock the Google Generative AI SDK to prevent live network calls during testing
 jest.mock('@google/generative-ai', () => {
-  const mockGenerateContent = jest.fn().mockResolvedValue({
+  const mockGenerateContentFn = jest.fn().mockResolvedValue({
     response: {
       text: () => 'Mocked AI response for seat search',
     },
   });
-  const mockGetGenerativeModel = jest.fn().mockReturnValue({
-    generateContent: mockGenerateContent,
+
+  const mockStream = (async function* () {
+    yield { text: () => 'Chunk 1 ' };
+    yield { text: () => 'Chunk 2' };
+  })();
+
+  const mockGenerateContentStreamFn = jest.fn().mockResolvedValue({
+    stream: mockStream,
   });
+
   return {
     GoogleGenerativeAI: jest.fn().mockImplementation(() => {
       return {
-        getGenerativeModel: mockGetGenerativeModel,
+        getGenerativeModel: () => ({
+          generateContent: mockGenerateContentFn,
+          generateContentStream: mockGenerateContentStreamFn,
+        }),
       };
     }),
+    __mockGenerateContentFn: mockGenerateContentFn,
+    __mockGenerateContentStreamFn: mockGenerateContentStreamFn,
   };
 });
 
@@ -72,6 +84,33 @@ describe('/api/chat API Route', () => {
 
     expect(response.status).toBe(200);
     expect(json.reply).toBe('Mocked AI response for seat search');
+  });
+
+  it('should return a stream when stream: true is passed', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Where is my seat?',
+        stream: true,
+      }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(200);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let text = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      text += decoder.decode(value, { stream: true });
+    }
+    expect(text).toBe('Chunk 1 Chunk 2');
   });
 
   it('should handle authenticated users and existing rate limit records', async () => {
@@ -177,5 +216,83 @@ describe('/api/chat API Route', () => {
 
     expect(response.status).toBe(500);
     expect(json.error).toBe('Failed to fetch AI response');
+  });
+  it('should fallback to x-real-ip if x-forwarded-for is missing', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-real-ip': '192.168.1.2',
+      },
+      body: JSON.stringify({ message: 'Hello' }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(200);
+  });
+
+  it('should fallback to unknown-ip if no IP headers are present', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Hello' }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(200);
+  });
+
+  it('should extract user prompt from messages as a string', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: 'Hello from string messages' }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(200);
+  });
+
+  it('should extract user prompt from messages as an array of objects', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ text: 'Hello from array' }] }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(200);
+  });
+
+  it('should return 429 when AI service is overwhelmed (quota error)', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const { __mockGenerateContentFn } = require('@google/generative-ai');
+    __mockGenerateContentFn.mockRejectedValueOnce({ status: 429, message: 'Quota exceeded' });
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Hello' }),
+    });
+    
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const response = await POST(mockRequest);
+    consoleSpy.mockRestore();
+    
+    expect(response.status).toBe(429);
   });
 });

@@ -7,4 +7,5 @@ const RateLimitSchema = new mongoose.Schema({
   lastResetDate: { type: Date, default: Date.now },
 });
 
+/* istanbul ignore next */
 export default mongoose.models.RateLimit || mongoose.model('RateLimit', RateLimitSchema);

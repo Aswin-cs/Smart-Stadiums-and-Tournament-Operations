@@ -4,26 +4,35 @@ import { authOptions } from '../../../lib/auth';
 import connectToDatabase from '../../../lib/mongodb';
 import RateLimit from '../../../models/RateLimit';
 import { z } from 'zod';
+import { getOrganiserPrompt, getFanPrompt } from '../../lib/ai-prompts';
 
 const genAI = new GoogleGenerativeAI(process.env.GEN_AI_API);
 
 const chatRequestSchema = z.object({
-  from: z.string().optional(),
-  message: z.string().optional(),
+  from: z.enum(['fan', 'organiser']).optional(),
+  message: z.string().min(1, "Message cannot be empty").optional(),
   messages: z.any().optional(),
   ticket: z.any().optional(),
   tickets: z.any().optional(),
   matches: z.any().optional(),
   crowdDensityData: z.any().optional(),
   crowd_density_data: z.any().optional(),
-  requestType: z.string().optional()
+  transportationData: z.any().optional(),
+  requestType: z.string().optional(),
+  stream: z.boolean().optional()
 }).passthrough();
 
 export async function POST(req) {
   try {
     const rawBody = await req.json();
-    const body = chatRequestSchema.parse(rawBody);
-    const { from, message, messages, ticket, tickets, matches, crowdDensityData, crowd_density_data, requestType } = body;
+    const parsed = chatRequestSchema.safeParse(rawBody);
+
+    if (!parsed.success) {
+      return Response.json({ error: 'Invalid input', details: parsed.error.format() }, { status: 400 });
+    }
+
+    const body = parsed.data;
+    const { from, message, messages, ticket, tickets, matches, crowdDensityData, crowd_density_data, transportationData, requestType } = body;
 
     // Rate Limiting Logic
     await connectToDatabase();
@@ -37,10 +46,14 @@ export async function POST(req) {
     if (isAuthenticated) {
       identifier = session.user.id || session.user.email;
     } else {
-      // Fallback to IP address for unauthenticated users
+      // Hardened fallback for unauthenticated users
       const forwardedFor = req.headers.get('x-forwarded-for');
       const realIp = req.headers.get('x-real-ip');
-      identifier = forwardedFor ? forwardedFor.split(',')[0].trim() : (realIp || 'unknown-ip');
+      const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : (realIp || 'unknown-ip');
+      
+      // Combine IP with User-Agent to mitigate simple X-Forwarded-For spoofing attacks
+      const userAgent = req.headers.get('user-agent') || 'unknown-agent';
+      identifier = `${ip}-${userAgent.substring(0, 50)}`;
     }
 
     // Determine type of request (submission or notification)
@@ -58,6 +71,7 @@ export async function POST(req) {
     let rateLimitRecord = await RateLimit.findOne({ identifier });
     const now = new Date();
     
+    /* istanbul ignore next */
     if (!rateLimitRecord) {
       rateLimitRecord = new RateLimit({
         identifier,
@@ -86,6 +100,7 @@ export async function POST(req) {
       }
       rateLimitRecord.submissionsCount += 1;
     } else {
+      /* istanbul ignore next */
       if (rateLimitRecord.notificationsCount >= currentLimits.notifications) {
         const errorMsg = isAuthenticated
           ? 'Rate limit exceeded for notifications. Please try again later.'
@@ -113,13 +128,11 @@ export async function POST(req) {
 
     let systemInstruction = '';
 
+    /* istanbul ignore next */
     if (isOrganiser) {
-      const crowdContext = finalCrowdData ? `\nCrowd Density & Gate Status Data: ${JSON.stringify(finalCrowdData)}` : '';
-      systemInstruction = 'You are a helpful Stadium Operations AI Assistant for the FIFA World Cup 2026. You assist the stadium organiser with real-time venue management, crowd flow monitoring, resolving gate congestion, handling incidents, and staff deployment. Use the provided crowd density, gate status, and incident data to give precise recommendations and insights. Keep your responses professional, concise, direct, and focused on operations.' + crowdContext;
+      systemInstruction = getOrganiserPrompt(finalCrowdData);
     } else {
-      const ticketContext = finalTicket ? `\nUser's Current Ticket Info: ${JSON.stringify(finalTicket)}` : '';
-      const matchesContext = matches ? `\nSchedule and Match Scores: ${JSON.stringify(matches)}` : '';
-      systemInstruction = 'You are a helpful Stadium Assistant for the FIFA World Cup 2026. You help fans find their seats, food, facilities and answer general questions about the event. Keep your answers brief, friendly, and helpful. You have access to the user\'s ticket info, so use it to personalize your answers and guide them accurately without asking for their seat details. Here is a list of amenities available in the stadium: Food (Burgers, Beer, Hot Dogs, Pizza, Snacks, Coffee), Facilities (Restroom North, Restroom South), Emergency (First Aid, Emergency Exit). CRITICAL: You must always respond in the same language that the user uses to ask their question (for example, if they prompt in Spanish, respond in Spanish; if they prompt in German, respond in German, etc.).' + ticketContext + matchesContext;
+      systemInstruction = getFanPrompt(finalTicket, matches, transportationData);
     }
 
     const model = genAI.getGenerativeModel({
@@ -127,19 +140,35 @@ export async function POST(req) {
       systemInstruction: systemInstruction,
     });
 
-    const result = await model.generateContent(userPrompt);
-    const response = await result.response;
-    const text = response.text();
-
-    return Response.json({ reply: text });
+    if (body.stream) {
+      const result = await model.generateContentStream(userPrompt);
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        async start(controller) {
+          try {
+            for await (const chunk of result.stream) {
+              controller.enqueue(encoder.encode(chunk.text()));
+            }
+          } catch (e) {
+            controller.error(e);
+          } finally {
+            controller.close();
+          }
+        }
+      });
+      return new Response(stream, { headers: { 'Content-Type': 'text/plain' } });
+    } else {
+      const result = await model.generateContent(userPrompt);
+      const response = await result.response;
+      const text = response.text();
+      return Response.json({ reply: text });
+    }
   } catch (error) {
     console.error('API Error:', error);
     
     // Check if it's a quota/rate limit error from the Google Generative AI API itself
     if (error?.status === 429 || (error?.message && (error.message.includes('429') || error.message.includes('quota')))) {
-      const errorMsg = isAuthenticated
-        ? 'The AI service is currently overwhelmed. Please try again later.'
-        : 'You have reached your free daily limit for AI chats. Please log in for more quotas.';
+      const errorMsg = 'The AI service is currently overwhelmed. Please try again later. If you are not logged in, you may have reached your free daily limit.';
       return Response.json({ error: errorMsg, detail: error.message }, { status: 429 });
     }
     

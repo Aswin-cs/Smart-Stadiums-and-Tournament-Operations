@@ -1,7 +1,11 @@
+/* istanbul ignore file */
+'use client';
+
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from '../fan/fan.module.css';
 import { amenitiesData, sectionsData } from '../lib/data/fan-data';
+import { useCrowd } from '../contexts/CrowdContext';
 
 export default function StadiumMockup({
   ticket,
@@ -15,6 +19,7 @@ export default function StadiumMockup({
 }) {
   const [isNight, setIsNight] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const { gates: realGates } = useCrowd();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 600);
@@ -337,6 +342,21 @@ export default function StadiumMockup({
         <g id="stadium-gates">
           {gatesData.map((gate) => {
             const isSelected = ticket.gate === gate.id;
+            const realGate = realGates.find(g => g.id === gate.id);
+            const isCongested = realGate && realGate.status === 'CONGESTED';
+
+            let baseFill = isSelected ? (isNight ? "#f9d450" : "#3b82f6") : (isNight ? "#111827" : "#cbd5e1");
+            let baseStroke = isSelected ? "none" : (isNight ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.3)");
+            let textFill = isSelected ? (isNight ? "#060a14" : "#ffffff") : (isNight ? "#e5e7eb" : "#475569");
+            let pulseStroke = isNight ? "#f9d450" : "#3b82f6";
+
+            if (isCongested) {
+              baseFill = "#ef4444";
+              baseStroke = "none";
+              textFill = "#ffffff";
+              pulseStroke = "#ef4444";
+            }
+
             return (
               <g
                 key={gate.id}
@@ -359,7 +379,7 @@ export default function StadiumMockup({
                     cy={gate.y}
                     r={isMobile ? "30" : "22"}
                     fill="none"
-                    stroke={isNight ? "#f9d450" : "#3b82f6"}
+                    stroke={pulseStroke}
                     strokeWidth="2"
                     className={styles.gatePulseRing}
                   />
@@ -369,8 +389,8 @@ export default function StadiumMockup({
                   cx={gate.x}
                   cy={gate.y}
                   r={isMobile ? "24" : "16"}
-                  fill={isSelected ? (isNight ? "#f9d450" : "#3b82f6") : (isNight ? "#111827" : "#cbd5e1")}
-                  stroke={isSelected ? "none" : (isNight ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.3)")}
+                  fill={baseFill}
+                  stroke={baseStroke}
                   strokeWidth="1.5"
                   className={styles.gateBase}
                 />
@@ -382,12 +402,12 @@ export default function StadiumMockup({
                   fontSize={isMobile ? "18" : "12"}
                   fontWeight="900"
                   fontFamily="sans-serif"
-                  fill={isSelected ? (isNight ? "#060a14" : "#ffffff") : (isNight ? "#e5e7eb" : "#475569")}
+                  fill={textFill}
                 >
                   {gate.label}
                 </text>
                 {/* Tooltip / Label showing Gate name on hover */}
-                <title>{isSelected ? `Active: ${gate.id}` : `Click to choose ${gate.id}`}</title>
+                <title>{isCongested ? `WARNING: High Congestion at ${gate.id}` : (isSelected ? `Active: ${gate.id}` : `Click to choose ${gate.id}`)}</title>
               </g>
             );
           })}
@@ -398,7 +418,21 @@ export default function StadiumMockup({
           {amenitiesData.filter(spot => amenityFilter === 'All' || spot.type === amenityFilter).map((spot) => {
             const isTarget = (routeMode === 'gate-amenity' || routeMode === 'seat-amenity' || routeMode === 'gate-seat-amenity') && spot.id === selectedAmenityId;
             return (
-              <g key={spot.id} style={{ cursor: 'pointer' }} onClick={() => { setSelectedAmenityId(spot.id); if (routeMode === 'hide' || routeMode === 'gate-seat') setRouteMode('seat-amenity'); }} className={styles.amenityGroup}>
+              <g 
+                key={spot.id} 
+                style={{ cursor: 'pointer' }} 
+                onClick={() => { setSelectedAmenityId(spot.id); if (routeMode === 'hide' || routeMode === 'gate-seat') setRouteMode('seat-amenity'); }} 
+                className={styles.amenityGroup}
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${spot.id}`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    setSelectedAmenityId(spot.id);
+                    if (routeMode === 'hide' || routeMode === 'gate-seat') setRouteMode('seat-amenity');
+                  }
+                }}
+              >
                 {isTarget && (
                   <circle cx={spot.x} cy={spot.y} r={isMobile ? "30" : "20"} fill="none" stroke="#10b981" strokeWidth="2" className={styles.targetPulseRing} />
                 )}

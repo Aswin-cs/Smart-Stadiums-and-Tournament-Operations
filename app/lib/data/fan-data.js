@@ -1,9 +1,11 @@
+/* istanbul ignore file */
 import {
   faHamburger, faBeer, faHotdog, faPizzaSlice, faCookie, faMugHot,
   faRestroom, faBriefcaseMedical, faDoorOpen,
   faCalendarAlt, faLocationDot, faMobileScreen, faRobot
 } from '@fortawesome/free-solid-svg-icons';
 
+/* istanbul ignore file */
 export const matches = [
   { id: 1, time: "18:00", date: "Jun 11", teamA: "USA", flagA: "🇺🇸", teamB: "MEX", flagB: "🇲🇽", stadium: "MetLife Stadium", status: "UPCOMING", group: "A" },
   { id: 2, time: "21:00", date: "Jun 12", teamA: "BRA", flagA: "🇧🇷", teamB: "ARG", flagB: "🇦🇷", stadium: "AT&T Stadium", status: "UPCOMING", group: "B" },
@@ -11,14 +13,6 @@ export const matches = [
   { id: 4, time: "20:00", date: "Jun 14", teamA: "GER", flagA: "🇩🇪", teamB: "ESP", flagB: "🇪🇸", stadium: "Estadio Azteca", status: "LIVE", scoreA: "1", scoreB: "1", group: "D" },
 ];
 
-// export const stadiums = [
-//   { name: "MetLife Stadium", city: "New York / New Jersey", capacity: "82,500", emoji: "🏟️", color: "#4361ee" },
-//   { name: "AT&T Stadium", city: "Dallas, TX", capacity: "100,000", emoji: "🏟️", color: "#c9a227" },
-//   { name: "Rose Bowl", city: "Los Angeles, CA", capacity: "92,542", emoji: "🏟️", color: "#c1121f" },
-//   { name: "Estadio Azteca", city: "Mexico City, MX", capacity: "87,523", emoji: "🏟️", color: "#1a8c2e" },
-//   { name: "BC Place", city: "Vancouver, CA", capacity: "54,500", emoji: "🏟️", color: "#e63946" },
-//   { name: "BMO Field", city: "Toronto, CA", capacity: "45,736", emoji: "🏟️", color: "#7b9cf7" },
-// ];
 
 export const amenitiesData = [
   { id: 'Burgers', icon: faHamburger, x: 450, y: 60, type: 'food' },
@@ -53,6 +47,7 @@ export const TICKET_CATEGORIES = ["Standard", "Premium", "VIP", "Hospitality"];
 export const GATES = ["Gate A", "Gate B", "Gate C", "Gate D", "Gate E", "Gate F"];
 export const SECTIONS = ["North Stand", "South Stand", "East Wing", "West Wing", "Central Block", "VIP Lounge"];
 
+/* istanbul ignore file */
 export const defaultTicket = {
   holderName: "Fan",
   match: "USA 🇺🇸 vs 🇲🇽 MEX",

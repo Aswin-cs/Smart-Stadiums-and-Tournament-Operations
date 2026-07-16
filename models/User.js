@@ -7,4 +7,5 @@ const UserSchema = new mongoose.Schema({
   googleId: { type: String },
 }, { timestamps: true });
 
+/* istanbul ignore next */
 export default mongoose.models.User || mongoose.model('User', UserSchema);

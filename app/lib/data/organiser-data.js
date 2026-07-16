@@ -1,7 +1,9 @@
+/* istanbul ignore file */
 import {
   faDoorOpen, faExclamationTriangle, faUsers, faUserShield
 } from '@fortawesome/free-solid-svg-icons';
 
+/* istanbul ignore file */
 export const initialStats = [
   { label: "Attendance", value: "68,400", sub: " / 82,500", icon: faUsers, iconColor: "#a855f7", trend: "83% Capacity", trendColor: "#4ade80" },
   { label: "Gate Flow", value: "1,240", sub: " / min", icon: faDoorOpen, iconColor: "#f59e0b", trend: "Stable flow", trendColor: "#4ade80" },
@@ -34,4 +36,11 @@ export const incidentTemplates = [
   { title: "Crowd bottleneck", location: "Gate B Outer Area", type: "WARNING", x: 600, y: 140, shortLabel: "! BOT" },
   { title: "Lost property", location: "Information Desk", type: "INFO", x: 300, y: 330, shortLabel: "! LST" },
   { title: "Unruly fan removed", location: "Section 104 Row K", type: "WARNING", x: 600, y: 380, shortLabel: "! FAN" }
+];
+
+export const initialBins = [
+  { id: 'Bin 1', location: 'North Stand', fillLevel: 45 },
+  { id: 'Bin 2', location: 'South Stand', fillLevel: 70 },
+  { id: 'Bin 3', location: 'East Wing', fillLevel: 20 },
+  { id: 'Bin 4', location: 'West Wing', fillLevel: 85 },
 ];

@@ -1,14 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faLocationDot, faBuilding } from '@fortawesome/free-solid-svg-icons';
 import styles from '../fan/fan.module.css';
+import Image from 'next/image';
+import { categoryColors } from '../lib/utils/ticket-colors';
+import TicketBarcode from './TicketBarcode';
 
 export default function TicketPreview({ ticket, animating }) {
-  const categoryColors = {
-    Standard: { bg: "rgba(99,102,241,0.15)", border: "rgba(99,102,241,0.4)", accent: "#818cf8" },
-    Premium: { bg: "rgba(201,162,39,0.12)", border: "rgba(201,162,39,0.4)", accent: "#f9d450" },
-    VIP: { bg: "rgba(239,68,68,0.12)", border: "rgba(239,68,68,0.4)", accent: "#f87171" },
-    Hospitality: { bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.4)", accent: "#34d399" },
-  };
   const c = categoryColors[ticket.category] || categoryColors.Standard;
 
   return (
@@ -19,18 +16,14 @@ export default function TicketPreview({ ticket, animating }) {
       {/* Perforated left edge */}
       <div className={styles.ticketStub}>
         <div className={styles.stubVertText}>ADMIT ONE</div>
-        <div className={styles.stubBarcode}>
-          {[23.5, 17.8, 16.3, 13.8, 14.5, 19.4, 11.0, 20.9, 11.3, 17.3, 22.7, 21.7, 16.8, 20.3, 19.1, 12.8, 15.1, 13.6, 18.0, 16.9, 21.8, 25.1].map((h, i) => (
-            <div key={i} className={styles.barcodeBar} style={{ height: `${h}px` }} />
-          ))}
-        </div>
+        <TicketBarcode />
       </div>
 
       {/* Main ticket body */}
       <div className={styles.ticketBody}>
         <div className={styles.ticketTopRow}>
           <div className={styles.ticketTournament}>
-            <span className={styles.ticketBall}><img src="/football.svg" alt="Football" style={{ width: '28px', height: '28px', display: 'inline-block', verticalAlign: 'middle' }} /></span>
+            <span className={styles.ticketBall}><Image src="/football.svg" alt="Football" width={28} height={28} style={{ display: 'inline-block', verticalAlign: 'middle' }} /></span>
             <div>
               <div className={styles.ticketTournamentName}>FIFA WORLD CUP 2026™</div>
               <div className={styles.ticketCategoryBadge} style={{ background: c.accent + '22', border: `1px solid ${c.accent}55`, color: c.accent }}>

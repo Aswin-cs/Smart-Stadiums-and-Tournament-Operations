@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
 
       {/* Top Trophy Header */}
       <div className={styles.trophyHeader}>
-        <img src="/trophy.svg" alt="FIFA World Cup Trophy" className={styles.trophyHeaderImg} />
+        <Image priority src="/trophy.svg" alt="FIFA World Cup Trophy" width={100} height={100} className={styles.trophyHeaderImg} />
       </div>
 
       {/* Top Badge */}
@@ -58,7 +59,7 @@ export default function Home() {
             <Link href="/fan" className={styles.profileCard} id="btn-fan-profile">
               <div className={styles.cardGlow} data-color="fan"></div>
               <div className={styles.cardIcon}>
-                <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <circle cx="30" cy="20" r="12" stroke="currentColor" strokeWidth="2.5" fill="none" />
                   <path d="M10 52 C10 38 20 32 30 32 C40 32 50 38 50 52" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" />
                   <path d="M22 38 L24 44 L30 42 L36 44 L38 38" stroke="currentColor" strokeWidth="2" fill="none" strokeLinejoin="round" />
@@ -79,7 +80,7 @@ export default function Home() {
             <Link href="/organiser" className={`${styles.profileCard} ${styles.profileCardOrg}`} id="btn-organiser-profile">
               <div className={styles.cardGlow} data-color="org"></div>
               <div className={styles.cardIcon}>
-                <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <rect x="8" y="12" width="44" height="36" rx="4" stroke="currentColor" strokeWidth="2.5" fill="none" />
                   <path d="M8 22 H52" stroke="currentColor" strokeWidth="2" opacity="0.5" />
                   <path d="M20 8 V16 M40 8 V16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
