@@ -33,6 +33,8 @@ export default function OrganiserPage() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeGateManage, setActiveGateManage] = useState(null);
+  const [isEmergencyDisabled, setIsEmergencyDisabled] = useState(false);
+  const [emergencyDisableCountdown, setEmergencyDisableCountdown] = useState(0);
   const {
     isChatOpen, setIsChatOpen,
     chatInput, setChatInput,
@@ -239,6 +241,11 @@ export default function OrganiserPage() {
   };
 
   const handleEmergencyOpenAllGatesClick = () => {
+    if (isEmergencyDisabled) return;
+
+    const isConfirmed = window.confirm("Safety Alert: Are you sure you want to open all gates? This will initiate the emergency crowd protocol.");
+    if (!isConfirmed) return;
+
     handleEmergencyOpenAllGates();
     setNotifications(prev => [...prev, {
       id: Date.now() + Math.random(),
@@ -246,6 +253,23 @@ export default function OrganiserPage() {
       text: "Unidirectional emergency flow initiated. All gates open to relieve crush conditions.",
       time: 'Just now'
     }]);
+
+    const maxDensity = gates && gates.length > 0 ? Math.max(...gates.map(g => g.density)) : 0;
+    const disableSeconds = maxDensity >= 80 ? 180 : (maxDensity >= 50 ? 120 : 60);
+
+    setIsEmergencyDisabled(true);
+    setEmergencyDisableCountdown(disableSeconds);
+
+    const interval = setInterval(() => {
+      setEmergencyDisableCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsEmergencyDisabled(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   const hasHighDensity = gates.some(g => g.density >= 80);
@@ -400,20 +424,15 @@ export default function OrganiserPage() {
             </div>
           )}
 
-          {hasHighDensity ? (
-            <button 
-              className={`${styles.actionBtnPrimary} ${styles.btnEmergency}`} 
-              onClick={handleEmergencyOpenAllGatesClick}
-            >
-              <FontAwesomeIcon icon={faExclamationTriangle} style={{ marginRight: '8px' }} />
-              Open All Gates
-            </button>
-          ) : (
-            <button className={styles.actionBtnPrimary}>
-              <svg viewBox="0 0 24 24" fill="none" width="16" height="16" style={{ marginRight: '8px' }}><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-              Deploy Staff
-            </button>
-          )}
+          <button 
+            className={`${styles.actionBtnPrimary} ${styles.btnEmergency}`} 
+            onClick={handleEmergencyOpenAllGatesClick}
+            disabled={isEmergencyDisabled}
+            style={{ opacity: isEmergencyDisabled ? 0.5 : 1, cursor: isEmergencyDisabled ? 'not-allowed' : 'pointer' }}
+          >
+            <FontAwesomeIcon icon={faExclamationTriangle} style={{ marginRight: '8px' }} />
+            {isEmergencyDisabled ? `Disabled (${Math.floor(emergencyDisableCountdown / 60)}:${(emergencyDisableCountdown % 60).toString().padStart(2, '0')})` : 'Open All Gates'}
+          </button>
         </div>
       </header>
 

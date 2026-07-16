@@ -15,7 +15,7 @@ describe('FanPage Server Component', () => {
   });
 
   it('exports correct revalidate value', async () => {
-    const module = await import('@/app/fan/page');
-    expect(module.revalidate).toBe(60);
+    const pageModule = await import('@/app/fan/page');
+    expect(pageModule.revalidate).toBe(60);
   });
 });

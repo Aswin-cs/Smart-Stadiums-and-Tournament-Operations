@@ -10,6 +10,7 @@ Smart Stadiums & Tournament Operations is a web application built with Next.js, 
 - **AI Crowd Management**: Intelligent crowd monitoring and management to ensure safety, optimize flow, and reduce congestion.
 - **Bin Filling Simulation & Management**: Real-time bin filling simulation for organizers, featuring one-click staff deployment and automated AI notifications for efficient waste management.
 - **Smart Transportation Updates**: Live tracking and simulation of public transit options (like Metro lines and shuttle buses) to help fans safely and efficiently navigate their way home, backed by AI recommendations.
+- **AI Rate Limiting**: To ensure optimal performance and fair usage, AI features implement rate limiting. Authenticated users receive higher limits for extended AI interactions, while non-authenticated users are subject to stricter rate limits.
 
 - **Authentication**: Secure user login and session management powered by Next-Auth.
 - **Database**: MongoDB integration using Mongoose for reliable data modeling and storage.

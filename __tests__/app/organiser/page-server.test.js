@@ -15,7 +15,7 @@ describe('OrganiserPage Server Component', () => {
   });
 
   it('exports correct revalidate value', async () => {
-    const module = await import('@/app/organiser/page');
-    expect(module.revalidate).toBe(60);
+    const pageModule = await import('@/app/organiser/page');
+    expect(pageModule.revalidate).toBe(60);
   });
 });
