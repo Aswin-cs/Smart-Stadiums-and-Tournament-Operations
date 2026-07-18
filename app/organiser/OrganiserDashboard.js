@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 'use client';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
@@ -9,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCommentDots, faXmark, faPaperPlane, faRobot,
   faChevronRight, faChevronLeft, faDoorOpen, faExclamationTriangle,
-  faUsers, faLightbulb, faCog, faUserShield, faUser
+  faUsers, faLightbulb, faCog, faUserShield, faUser, faTemperatureHigh
 } from '@fortawesome/free-solid-svg-icons';
 
 import dynamic from 'next/dynamic';
@@ -17,6 +16,7 @@ import { useCrowd } from '../contexts/CrowdContext';
 import { useOrganiserChat } from '../hooks/useOrganiserChat';
 
 const OrganiserStadiumMap = dynamic(() => import('../components/OrganiserStadiumMap'), { ssr: false });
+import OrganiserChatWidget from '../components/OrganiserChatWidget';
 
 export default function OrganiserPage() {
   const { data: session } = useSession();
@@ -35,12 +35,7 @@ export default function OrganiserPage() {
   const [activeGateManage, setActiveGateManage] = useState(null);
   const [isEmergencyDisabled, setIsEmergencyDisabled] = useState(false);
   const [emergencyDisableCountdown, setEmergencyDisableCountdown] = useState(0);
-  const {
-    isChatOpen, setIsChatOpen,
-    chatInput, setChatInput,
-    isTyping, chatMessages,
-    messagesEndRef, handleSendMessage
-  } = useOrganiserChat({ gates, incidents, stats });
+  const chatHook = useOrganiserChat({ gates, incidents, stats });
 
   const [notifications, setNotifications] = useState([]);
   const activeWarningsRef = useRef({
@@ -48,9 +43,29 @@ export default function OrganiserPage() {
     'Gate C': true
   });
 
-  const triggerAiWarningRecommendation = useCallback((gate) => {
+  const triggerAiWarningRecommendation = useCallback(async (gate) => {
     try {
-      const cleanReply = `Deploy additional staff to ${gate.id} immediately to resolve congestion (${gate.density}% density).`;
+      let cleanReply = `Deploy additional staff to ${gate.id} immediately to resolve congestion (${gate.density}% density).`;
+      
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'organiser',
+            requestType: 'notification',
+            message: `Generate a short (1 sentence) urgent action recommendation for staff regarding gate congestion. Gate ${gate.id} has reached a critical density of ${gate.density}%.`,
+            stream: false
+          })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.reply) cleanReply = data.reply.trim().replace(/^["']|["']$/g, '');
+        }
+      } catch (err) {
+        // AI warning fetch failed silently
+      }
+
       const actions = [
         { gateId: gate.id, newDensity: Math.max(0, gate.density - 20) }
       ];
@@ -71,7 +86,7 @@ export default function OrganiserPage() {
         setNotifications(prev => prev.filter(n => n.id !== newNotification.id));
       }, 12000);
     } catch (err) {
-      console.error('Failed to fetch warning recommendation:', err);
+      // Failed to create warning recommendation
     }
   }, []);
 
@@ -90,9 +105,29 @@ export default function OrganiserPage() {
     });
   }, [gates, triggerAiWarningRecommendation]);
 
-  const triggerAiBinRecommendation = useCallback((bin) => {
+  const triggerAiBinRecommendation = useCallback(async (bin) => {
     try {
-      const cleanReply = `${bin.id} at ${bin.location} is overflowing (${bin.fillLevel}% full). Please deploy cleaning staff.`;
+      let cleanReply = `${bin.id} at ${bin.location} is overflowing (${bin.fillLevel}% full). Please deploy cleaning staff.`;
+      
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            from: 'organiser',
+            requestType: 'notification',
+            message: `Generate a short (1 sentence) urgent notification. ${bin.id} at ${bin.location} is overflowing (${bin.fillLevel}% full). Tell staff to deploy cleaners to maintain zero-waste sustainability compliance.`,
+            stream: false
+          })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.reply) cleanReply = data.reply.trim().replace(/^["']|["']$/g, '');
+        }
+      } catch (err) {
+        // AI bin warning fetch failed silently
+      }
+
       const actions = [{ binId: bin.id, actionType: 'EMPTY_BIN' }];
 
       const newNotification = {
@@ -110,7 +145,7 @@ export default function OrganiserPage() {
         setNotifications(prev => prev.filter(n => n.id !== newNotification.id));
       }, 12000);
     } catch (err) {
-      console.error('Failed to create bin warning recommendation:', err);
+      // Failed to create bin warning recommendation
     }
   }, []);
 
@@ -143,90 +178,7 @@ export default function OrganiserPage() {
     return s;
   });
 
-  const chipsRef = useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(false);
-
-  const updateScrollArrows = () => {
-    const el = chipsRef.current;
-    if (!el) return;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    setShowLeftArrow(scrollLeft > 2);
-    setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 2);
-  };
-
-  useEffect(() => {
-    if (isChatOpen) {
-      const timer = setTimeout(() => {
-        updateScrollArrows();
-      }, 150);
-      window.addEventListener('resize', updateScrollArrows);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('resize', updateScrollArrows);
-      };
-    }
-  }, [isChatOpen]);
-
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeftRef = useRef(0);
-  const isDragging = useRef(false);
-
-  const handleMouseDown = (e) => {
-    const el = chipsRef.current;
-    if (!el) return;
-    isDown.current = true;
-    isDragging.current = false;
-    el.classList.add(styles.dragActive);
-    startX.current = e.pageX - el.offsetLeft;
-    scrollLeftRef.current = el.scrollLeft;
-  };
-
-  const handleMouseLeave = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    if (el) {
-      el.classList.remove(styles.dragActive);
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    if (el) {
-      el.classList.remove(styles.dragActive);
-    }
-    setTimeout(() => {
-      isDragging.current = false;
-    }, 50);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current) return;
-    e.preventDefault();
-    const el = chipsRef.current;
-    if (!el) return;
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    if (Math.abs(x - startX.current) > 5) {
-      isDragging.current = true;
-    }
-    el.scrollLeft = scrollLeftRef.current - walk;
-  };
-
-  const handleChipClick = (e, text) => {
-    if (isDragging.current) {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-    }
-    handleSendMessage(text);
-  };
-
-  const handleAcceptAction = (actions, notificationId) => {
+  const handleAcceptAction = (actions, notifId) => {
     if (actions && actions.length > 0) {
       actions.forEach(action => {
         if (action.gateId && action.newDensity !== undefined) {
@@ -237,7 +189,7 @@ export default function OrganiserPage() {
         }
       });
     }
-    setNotifications(prev => prev.filter(n => n.id !== notificationId));
+    setNotifications(prev => prev.filter(n => n.id !== notifId));
   };
 
   const handleEmergencyOpenAllGatesClick = () => {
@@ -296,7 +248,7 @@ export default function OrganiserPage() {
           
           <div className={styles.navControlGroup}>
             <div className={styles.navBrand}>
-              <Image priority src="/trophy.svg" alt="Website Logo" width={20} height={20} style={{ marginRight: '8px' }} />
+              <Image priority src="/trophy.svg" alt="Website Logo" width={20} height={20} className={styles.iconMargin} />
               <span className={styles.navBrandText}>FIFA WC 2026</span>
             </div>
             <div className={styles.navHoverLabel}>Tournament</div>
@@ -342,9 +294,9 @@ export default function OrganiserPage() {
             Real-time stadium overview. Monitor gate flow, crowd density, and active incidents.
           </p>
         </div>
-        <div className={styles.headerActions} style={{ position: 'relative' }}>
+        <div className={`${styles.headerActions} ${styles.posRelative}`}>
           <button className={styles.actionBtn} onClick={() => setIsSettingsOpen(!isSettingsOpen)}>
-            <FontAwesomeIcon icon={faCog} style={{ marginRight: '8px' }} />
+            <FontAwesomeIcon icon={faCog} className={styles.iconMargin} />
             Control Panel
           </button>
 
@@ -373,10 +325,11 @@ export default function OrganiserPage() {
                   </label>
                 </div>
                 <div className={styles.settingsBtnRow}>
-                  <button className={styles.actionBtn} onClick={handleSimulateOverflow} style={{ fontSize: '0.72rem', padding: '8px', justifyContent: 'center' }}>
-                    Trigger Overflow
+                  <button className={`${styles.actionBtn} ${styles.actionBtnSm}`} onClick={handleSimulateOverflow}>
+                    <FontAwesomeIcon icon={faUsers} className={styles.iconMargin} />
+                    Crowd Rush
                   </button>
-                  <button className={styles.actionBtn} onClick={handleReset} style={{ fontSize: '0.72rem', padding: '8px', justifyContent: 'center' }}>
+                  <button className={`${styles.actionBtn} ${styles.actionBtnSm}`} onClick={handleReset}>
                     Reset State
                   </button>
                 </div>
@@ -386,13 +339,15 @@ export default function OrganiserPage() {
               <div className={styles.settingsSection}>
                 <span className={styles.settingsSectionTitle}>Climate Diversity</span>
                 <div className={styles.settingsBtnRow}>
-                  <button className={styles.actionBtn} onClick={() => handleSimulateClimate('HEATWAVE')} style={{ fontSize: '0.72rem', padding: '8px', justifyContent: 'center', background: climate === 'HEATWAVE' ? 'rgba(239, 68, 68, 0.2)' : '', border: climate === 'HEATWAVE' ? '1px solid rgba(239,68,68,0.5)' : '' }}>
-                    🌡️ Heatwave
+                  <button className={`${styles.actionBtn} ${styles.actionBtnSm} ${climate === 'HEATWAVE' ? styles.bgHeat : ''}`} onClick={() => handleSimulateClimate('HEATWAVE')}>
+                    <FontAwesomeIcon icon={faTemperatureHigh} className={styles.iconMargin} />
+                    Heatwave
                   </button>
-                  <button className={styles.actionBtn} onClick={() => handleSimulateClimate('STORM')} style={{ fontSize: '0.72rem', padding: '8px', justifyContent: 'center', background: climate === 'STORM' ? 'rgba(59, 130, 246, 0.2)' : '', border: climate === 'STORM' ? '1px solid rgba(59,130,246,0.5)' : '' }}>
-                    ⛈️ Storm
+                  <button className={`${styles.actionBtn} ${styles.actionBtnSm} ${climate === 'STORM' ? styles.bgStorm : ''}`} onClick={() => handleSimulateClimate('STORM')}>
+                    <FontAwesomeIcon icon={faTemperatureHigh} className={styles.iconMargin} />
+                    Storm
                   </button>
-                  <button className={styles.actionBtn} onClick={() => handleSimulateClimate('CLEAR')} style={{ fontSize: '0.72rem', padding: '8px', justifyContent: 'center', background: climate === 'CLEAR' ? 'rgba(16, 185, 129, 0.2)' : '', border: climate === 'CLEAR' ? '1px solid rgba(16,185,129,0.5)' : '' }}>
+                  <button className={`${styles.actionBtn} ${styles.actionBtnSm} ${climate === 'CLEAR' ? styles.bgClear : ''}`} onClick={() => handleSimulateClimate('CLEAR')}>
                     ☀️ Clear
                   </button>
                 </div>
@@ -424,13 +379,12 @@ export default function OrganiserPage() {
             </div>
           )}
 
-          <button 
-            className={`${styles.actionBtnPrimary} ${styles.btnEmergency}`} 
+          <button
+            className={`${styles.emergencyBtn} ${isEmergencyDisabled ? styles.disabled : ''}`}
             onClick={handleEmergencyOpenAllGatesClick}
             disabled={isEmergencyDisabled}
-            style={{ opacity: isEmergencyDisabled ? 0.5 : 1, cursor: isEmergencyDisabled ? 'not-allowed' : 'pointer' }}
           >
-            <FontAwesomeIcon icon={faExclamationTriangle} style={{ marginRight: '8px' }} />
+            <FontAwesomeIcon icon={faExclamationTriangle} className={styles.iconMargin} />
             {isEmergencyDisabled ? `Disabled (${Math.floor(emergencyDisableCountdown / 60)}:${(emergencyDisableCountdown % 60).toString().padStart(2, '0')})` : 'Open All Gates'}
           </button>
         </div>
@@ -459,23 +413,25 @@ export default function OrganiserPage() {
         {/* Main Grid */}
         <div className={styles.contentGrid}>
           {/* Left Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <section className={styles.panelMap}>
+          <div className={styles.flexCol}>
+            
+            {/* Action Panel 1: Map Insights */}
+            <div className={styles.sidePanel}>
               <div className={styles.panelHeader}>
-                <h2 className={styles.panelTitle}>
-                  <span className={styles.panelDot} style={{background:'#4361ee'}}></span>
+                <div className={styles.panelTitle}>
+                  <span className={`${styles.panelDot} ${styles.bgBlue}`}></span>
                   Live Crowd Heatmap
-                </h2>
+                </div>
               </div>
               <OrganiserStadiumMap gates={gates} incidents={incidents} climate={climate} />
-            </section>
+            </div>
 
             {/* Waste Management */}
             <section className={styles.panel}>
               <div className={styles.panelHeader}>
                 <h2 className={styles.panelTitle}>
-                  <span className={styles.panelDot} style={{background:'#10b981'}}></span>
-                  Waste Management
+                  <span className={`${styles.panelDot} ${styles.bgGreen}`}></span>
+                  AI Sustainability & Waste Intelligence
                 </h2>
               </div>
               <div className={styles.gateList}>
@@ -510,7 +466,7 @@ export default function OrganiserPage() {
             <section className={styles.panel}>
               <div className={styles.panelHeader}>
                 <h2 className={styles.panelTitle}>
-                  <span className={styles.panelDot} style={{background:'#ef4444'}}></span>
+                  <span className={`${styles.panelDot} ${styles.bgRed}`}></span>
                   Live Incident Feed
                 </h2>
                 <span className={styles.panelCount}>{incidents.length} active</span>
@@ -537,7 +493,7 @@ export default function OrganiserPage() {
             <section className={styles.panel}>
               <div className={styles.panelHeader}>
                 <h2 className={styles.panelTitle}>
-                  <span className={styles.panelDot} style={{background:'var(--fifa-gold)'}}></span>
+                  <span className={`${styles.panelDot} ${styles.bgGold}`}></span>
                   Gate Status
                 </h2>
               </div>
@@ -606,129 +562,16 @@ export default function OrganiserPage() {
 
       {/* Floating Chat Button */}
       <button
-        className={`${styles.chatButton} ${isChatOpen ? styles.chatButtonActive : ''}`}
-        onClick={() => setIsChatOpen(!isChatOpen)}
+        className={`${styles.chatButton} ${chatHook.isChatOpen ? styles.chatButtonActive : ''}`}
+        onClick={() => chatHook.setIsChatOpen(!chatHook.isChatOpen)}
         aria-label="Toggle chat window"
       >
         <span className={styles.chatBtnIcon}>
-          <FontAwesomeIcon icon={isChatOpen ? faXmark : faCommentDots} />
+          <FontAwesomeIcon icon={chatHook.isChatOpen ? faXmark : faCommentDots} />
         </span>
       </button>
 
-      {/* Chat Window */}
-      {isChatOpen && (
-        <div className={styles.chatWindow} id="chat-window">
-          {/* Header */}
-          <div className={styles.chatHeader}>
-            <div className={styles.chatHeaderInfo}>
-              <div className={styles.chatAvatar}>
-                <FontAwesomeIcon icon={faRobot} />
-                <span className={styles.avatarOnline} />
-              </div>
-              <div>
-                <h4 className={styles.chatTitle}>Operations Assistant</h4>
-                <p className={styles.chatSubtitle}>AI Support • Online</p>
-              </div>
-            </div>
-            <button className={styles.chatCloseBtn} onClick={() => setIsChatOpen(false)} aria-label="Close chat">
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className={styles.chatMessagesContainer}>
-            {chatMessages.map(msg => (
-              <div key={msg.id} className={`${styles.chatMessage} ${msg.sender === 'user' ? styles.chatMessageUser : styles.chatMessageBot}`}>
-                {msg.sender === 'bot' && (
-                  <div className={styles.msgAvatar}>
-                    <FontAwesomeIcon icon={faRobot} />
-                  </div>
-                )}
-                <div className={styles.msgBubble}>
-                  <p className={styles.msgText}>{msg.text}</p>
-                  <span className={styles.msgTime}>{msg.time}</span>
-                </div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className={`${styles.chatMessage} ${styles.chatMessageBot}`}>
-                <div className={styles.msgAvatar}>
-                  <FontAwesomeIcon icon={faRobot} />
-                </div>
-                <div className={styles.msgBubble}>
-                  <div className={styles.typingIndicator}>
-                    <span></span><span></span><span></span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Quick Options / Chips */}
-          <div className={styles.chatQuickChipsContainer}>
-            {showLeftArrow && (
-              <button
-                className={`${styles.chatScrollBtn} ${styles.chatScrollBtnLeft}`}
-                onClick={() => {
-                  const el = chipsRef.current;
-                  if (el) {
-                    el.scrollBy({ left: -120, behavior: 'smooth' });
-                  }
-                }}
-                type="button"
-                aria-label="Scroll left"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-            )}
-            <div
-              className={styles.chatQuickChips}
-              id="chat-quick-chips"
-              ref={chipsRef}
-              onScroll={updateScrollArrows}
-              onMouseDown={handleMouseDown}
-              onMouseLeave={handleMouseLeave}
-              onMouseUp={handleMouseUp}
-              onMouseMove={handleMouseMove}
-            >
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Check congested gates")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faDoorOpen} /></span> Congested Gates</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Show gate flow stats")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faUsers} /></span> Gate Flows</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Any active incidents?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faExclamationTriangle} /></span> Incidents Feed</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Provide crowd recommendations")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faLightbulb} /></span> Recommendations</button>
-            </div>
-            {showRightArrow && (
-              <button
-                className={`${styles.chatScrollBtn} ${styles.chatScrollBtnRight}`}
-                onClick={() => {
-                  const el = chipsRef.current;
-                  if (el) {
-                    el.scrollBy({ left: 120, behavior: 'smooth' });
-                  }
-                }}
-                type="button"
-                aria-label="Scroll right"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
-            )}
-          </div>
-
-          {/* Input Footer */}
-          <form className={styles.chatInputArea} onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
-            <input
-              type="text"
-              className={styles.chatInput}
-              placeholder="Ask operations assistant..."
-              value={chatInput}
-              onChange={e => setChatInput(e.target.value)}
-            />
-            <button type="submit" className={styles.chatSendBtn} aria-label="Send message">
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </button>
-          </form>
-        </div>
-      )}
+      <OrganiserChatWidget chatHook={chatHook} />
 
       {/* Toast Notifications */}
       <div className={styles.notificationContainer}>
@@ -745,7 +588,7 @@ export default function OrganiserPage() {
             </div>
             <div className={styles.notificationBody}>
               <p className={styles.notificationText}>{n.text}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+              <div className={styles.flexBetween}>
                 <span className={styles.notificationMeta}>Current Density: {n.density}% · {n.time}</span>
                 {n.actions && n.actions.length > 0 && (
                   <button 

@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -89,6 +88,7 @@ export default function StadiumMockup({
               className={`${styles.toggleBtn} ${!isNight ? styles.toggleBtnActive : ''}`}
               onClick={() => setIsNight(false)}
               id="btn-stadium-day"
+              aria-label="Day Mode"
             >
               <span style={{ fontSize: isMobile ? '0.7rem' : 'inherit' }}>☀️</span>{isMobile ? '' : ' Day'}
             </button>
@@ -99,6 +99,7 @@ export default function StadiumMockup({
               className={`${styles.toggleBtn} ${isNight ? styles.toggleBtnActive : ''}`}
               onClick={() => setIsNight(true)}
               id="btn-stadium-night"
+              aria-label="Night Mode"
             >
               <span style={{ fontSize: isMobile ? '0.9rem' : 'inherit' }}>🌙</span>{isMobile ? '' : ' Night'}
             </button>

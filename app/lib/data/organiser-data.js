@@ -1,9 +1,7 @@
-/* istanbul ignore file */
 import {
   faDoorOpen, faExclamationTriangle, faUsers, faUserShield
 } from '@fortawesome/free-solid-svg-icons';
 
-/* istanbul ignore file */
 export const initialStats = [
   { label: "Attendance", value: "68,400", sub: " / 82,500", icon: faUsers, iconColor: "#a855f7", trend: "83% Capacity", trendColor: "#4ade80" },
   { label: "Gate Flow", value: "1,240", sub: " / min", icon: faDoorOpen, iconColor: "#f59e0b", trend: "Stable flow", trendColor: "#4ade80" },

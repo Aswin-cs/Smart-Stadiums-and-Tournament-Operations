@@ -1,11 +1,9 @@
-/* istanbul ignore file */
 import {
   faHamburger, faBeer, faHotdog, faPizzaSlice, faCookie, faMugHot,
   faRestroom, faBriefcaseMedical, faDoorOpen,
   faCalendarAlt, faLocationDot, faMobileScreen, faRobot
 } from '@fortawesome/free-solid-svg-icons';
 
-/* istanbul ignore file */
 export const matches = [
   { id: 1, time: "18:00", date: "Jun 11", teamA: "USA", flagA: "🇺🇸", teamB: "MEX", flagB: "🇲🇽", stadium: "MetLife Stadium", status: "UPCOMING", group: "A" },
   { id: 2, time: "21:00", date: "Jun 12", teamA: "BRA", flagA: "🇧🇷", teamB: "ARG", flagB: "🇦🇷", stadium: "AT&T Stadium", status: "UPCOMING", group: "B" },
@@ -47,7 +45,6 @@ export const TICKET_CATEGORIES = ["Standard", "Premium", "VIP", "Hospitality"];
 export const GATES = ["Gate A", "Gate B", "Gate C", "Gate D", "Gate E", "Gate F"];
 export const SECTIONS = ["North Stand", "South Stand", "East Wing", "West Wing", "Central Block", "VIP Lounge"];
 
-/* istanbul ignore file */
 export const defaultTicket = {
   holderName: "Fan",
   match: "USA 🇺🇸 vs 🇲🇽 MEX",

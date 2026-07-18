@@ -1829,6 +1829,29 @@
   gap: 12px;
 }
 
+.chatControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chatToggleLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.accessCheckbox {
+  accent-color: #3b82f6;
+}
+
+.volunteerCheckbox {
+  accent-color: #10b981;
+}
+
 .chatAvatar {
   position: relative;
   width: 36px;
@@ -2093,6 +2116,35 @@
 .chipBtn:hover .chipIcon {
   background: rgba(255, 255, 255, 0.18);
 }
+
+.chatMultilingualHint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  letter-spacing: 0.3px;
+}
+
+.iconMargin {
+  margin-right: 6px;
+}
+.inlineMiddle {
+  display: inline-block;
+  vertical-align: middle;
+}
+.bgGold { background: var(--fifa-gold); }
+.bgRed { background: #ef4444; }
+.bgBlue { background: #3b82f6; }
+.bgLightRed { background: var(--fifa-red-light); }
+.borderRed { border-color: rgba(239,68,68,0.3); }
+.textRed { color: #ef4444; }
+.borderGreen { border-color: rgba(74,222,128,0.3); }
+.textGreen { color: #4ade80; }
 
 .chatInputArea {
   display: flex;

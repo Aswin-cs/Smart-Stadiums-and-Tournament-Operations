@@ -5,6 +5,8 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [accessibilityMode, setAccessibilityMode] = useState(false);
+  const [volunteerMode, setVolunteerMode] = useState(false);
   const messagesEndRef = useRef(null);
   const [chatMessages, setChatMessages] = useState([
     {
@@ -100,6 +102,8 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
           matches, 
           crowdDensityData: { gates, incidents, stats },
           transportationData: transportation,
+          accessibilityMode: accessibilityMode,
+          volunteerMode: volunteerMode,
           stream: true 
         }),
       });
@@ -107,7 +111,7 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
       if (!response.ok) {
         setIsTyping(false);
         const data = await response.json();
-        console.error('Chat API returned error:', data?.error, data?.detail);
+        // Error handled silently
         if (response.status === 429) {
           alert(data?.error || 'Your limit is over. Please try again later.');
           return;
@@ -146,7 +150,7 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
       }
     } catch (error) {
       setIsTyping(false);
-      console.error('Chat AI Error:', error.message);
+      // Chat AI Error handled by UI fallback
       setChatMessages(prev => [...prev, {
         id: Date.now() + 1,
         sender: 'bot',
@@ -160,6 +164,8 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
     isChatOpen, setIsChatOpen,
     chatInput, setChatInput,
     isTyping, chatMessages,
-    messagesEndRef, handleSendMessage
+    messagesEndRef, handleSendMessage,
+    accessibilityMode, setAccessibilityMode,
+    volunteerMode, setVolunteerMode
   };
 }

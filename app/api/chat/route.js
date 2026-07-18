@@ -19,6 +19,8 @@ const chatRequestSchema = z.object({
   crowd_density_data: z.any().optional(),
   transportationData: z.any().optional(),
   requestType: z.string().optional(),
+  accessibilityMode: z.boolean().optional(),
+  volunteerMode: z.boolean().optional(),
   stream: z.boolean().optional()
 }).passthrough();
 
@@ -32,7 +34,7 @@ export async function POST(req) {
     }
 
     const body = parsed.data;
-    const { from, message, messages, ticket, tickets, matches, crowdDensityData, crowd_density_data, transportationData, requestType } = body;
+    const { from, message, messages, ticket, tickets, matches, crowdDensityData, crowd_density_data, transportationData, requestType, accessibilityMode, volunteerMode } = body;
 
     // Rate Limiting Logic
     await connectToDatabase();
@@ -71,7 +73,6 @@ export async function POST(req) {
     let rateLimitRecord = await RateLimit.findOne({ identifier });
     const now = new Date();
     
-    /* istanbul ignore next */
     if (!rateLimitRecord) {
       rateLimitRecord = new RateLimit({
         identifier,
@@ -100,7 +101,6 @@ export async function POST(req) {
       }
       rateLimitRecord.submissionsCount += 1;
     } else {
-      /* istanbul ignore next */
       if (rateLimitRecord.notificationsCount >= currentLimits.notifications) {
         const errorMsg = isAuthenticated
           ? 'Rate limit exceeded for notifications. Please try again later.'
@@ -128,11 +128,10 @@ export async function POST(req) {
 
     let systemInstruction = '';
 
-    /* istanbul ignore next */
     if (isOrganiser) {
       systemInstruction = getOrganiserPrompt(finalCrowdData);
     } else {
-      systemInstruction = getFanPrompt(finalTicket, matches, transportationData);
+      systemInstruction = getFanPrompt(finalTicket, matches, transportationData, accessibilityMode, volunteerMode);
     }
 
     const model = genAI.getGenerativeModel({
@@ -164,8 +163,6 @@ export async function POST(req) {
       return Response.json({ reply: text });
     }
   } catch (error) {
-    console.error('API Error:', error);
-    
     // Check if it's a quota/rate limit error from the Google Generative AI API itself
     if (error?.status === 429 || (error?.message && (error.message.includes('429') || error.message.includes('quota')))) {
       const errorMsg = 'The AI service is currently overwhelmed. Please try again later. If you are not logged in, you may have reached your free daily limit.';

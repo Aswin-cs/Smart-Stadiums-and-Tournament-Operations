@@ -295,4 +295,49 @@ describe('/api/chat API Route', () => {
     
     expect(response.status).toBe(429);
   });
+
+  it('should return 400 when input validation fails', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '' }), // Invalid since min length is 1
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(400);
+  });
+
+  it('should return 429 when notification rate limit is exceeded', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce({
+      submissionsCount: 0,
+      notificationsCount: 5, // Over unauth limit for notifications
+      lastResetDate: new Date(),
+      save: mockSave,
+    });
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Hello', requestType: 'notification' }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(429);
+  });
+
+  it('should handle organiser from value and pass crowd data', async () => {
+    getServerSession.mockResolvedValueOnce(null);
+    RateLimit.findOne.mockResolvedValueOnce(null);
+
+    const mockRequest = new Request('http://localhost/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Hello', from: 'organiser', crowdDensityData: {} }),
+    });
+
+    const response = await POST(mockRequest);
+    expect(response.status).toBe(200);
+  });
 });

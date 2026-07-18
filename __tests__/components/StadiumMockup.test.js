@@ -10,7 +10,7 @@ jest.mock('@fortawesome/react-fontawesome', () => ({
 
 // Mock useCrowd so StadiumMockup doesn't fail
 jest.mock('@/app/contexts/CrowdContext', () => ({
-  useCrowd: () => ({ gates: [], handleUpdateGateDensity: jest.fn() })
+  useCrowd: jest.fn(() => ({ gates: [], handleUpdateGateDensity: jest.fn() }))
 }));
 
 describe('StadiumMockup', () => {
@@ -22,8 +22,11 @@ describe('StadiumMockup', () => {
 
     expect(screen.getByText('Day')).toBeInTheDocument();
     
-    const dayBtn = screen.getByText('Day');
+    const dayBtn = screen.getByRole('button', { name: /Day Mode/i });
     await user.click(dayBtn);
+
+    const nightBtn = screen.getByRole('button', { name: /Night Mode/i });
+    await user.click(nightBtn);
   });
 
   it('calls setRouteMode when route dropdown changes', async () => {
@@ -67,5 +70,35 @@ describe('StadiumMockup', () => {
 
     rerender(<StadiumMockup ticket={mockTicket} routeMode="gate-amenity" setRouteMode={jest.fn()} selectedAmenityId="Pizza" setSelectedAmenityId={jest.fn()} amenityFilter="All" setAmenityFilter={jest.fn()} onSelectGate={jest.fn()} />);
     rerender(<StadiumMockup ticket={mockTicket} routeMode="gate-seat-amenity" setRouteMode={jest.fn()} selectedAmenityId="Pizza" setSelectedAmenityId={jest.fn()} amenityFilter="All" setAmenityFilter={jest.fn()} onSelectGate={jest.fn()} />);
+  });
+
+  it('renders congested gates correctly', () => {
+    const { useCrowd } = require('@/app/contexts/CrowdContext');
+    useCrowd.mockReturnValue({
+      gates: [{ id: 'Gate B', status: 'CONGESTED' }],
+      handleUpdateGateDensity: jest.fn()
+    });
+
+    render(<StadiumMockup ticket={mockTicket} routeMode="hide" setRouteMode={jest.fn()} selectedAmenityId="Pizza" setSelectedAmenityId={jest.fn()} amenityFilter="All" setAmenityFilter={jest.fn()} onSelectGate={jest.fn()} />);
+    
+    // Gate B should be congested
+    const gateBTitle = screen.getByText(/WARNING: High Congestion at Gate B/i);
+    expect(gateBTitle).toBeInTheDocument();
+  });
+
+  it('handles amenity clicks and keydowns', async () => {
+    const setSelectedAmenityId = jest.fn();
+    const setRouteMode = jest.fn();
+    const user = userEvent.setup();
+    
+    render(<StadiumMockup ticket={mockTicket} routeMode="hide" setRouteMode={setRouteMode} selectedAmenityId="Pizza" setSelectedAmenityId={setSelectedAmenityId} amenityFilter="All" setAmenityFilter={jest.fn()} onSelectGate={jest.fn()} />);
+    
+    const amenity = screen.getByLabelText('Select Burgers');
+    await user.click(amenity);
+    expect(setSelectedAmenityId).toHaveBeenCalledWith('Burgers');
+    expect(setRouteMode).toHaveBeenCalledWith('seat-amenity');
+    
+    fireEvent.keyDown(amenity, { key: 'Enter', code: 'Enter', charCode: 13 });
+    expect(setSelectedAmenityId).toHaveBeenCalledTimes(2);
   });
 });

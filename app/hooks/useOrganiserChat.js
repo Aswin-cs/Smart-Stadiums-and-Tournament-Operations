@@ -54,7 +54,7 @@ export function useOrganiserChat({ gates, incidents, stats }) {
       if (!response.ok) {
         setIsTyping(false);
         const data = await response.json();
-        console.error('Chat API returned error:', data?.error, data?.detail);
+        // Error handled silently
         if (response.status === 429) {
           alert(data?.error || 'Your limit is over. Please try again later.');
           return;
@@ -93,7 +93,7 @@ export function useOrganiserChat({ gates, incidents, stats }) {
       }
     } catch (error) {
       setIsTyping(false);
-      console.error('Chat AI Error:', error.message);
+      // Chat AI Error handled by UI fallback
       setChatMessages(prev => [...prev, {
         id: Date.now() + Math.random(),
         sender: 'bot',

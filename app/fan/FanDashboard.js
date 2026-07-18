@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 'use client';
 
 import Link from 'next/link';
@@ -16,14 +15,15 @@ import {
   faFutbol, faBuilding, faUsers
 } from '@fortawesome/free-solid-svg-icons';
 
-import { matches, stadiums, fanTips, TICKET_CATEGORIES, GATES, SECTIONS, defaultTicket, getNearestAmenity } from '../lib/data/fan-data';
+import { matches, stadiums, fanTips, defaultTicket, getNearestAmenity } from '../lib/data/fan-data';
 import dynamic from 'next/dynamic';
-import TicketPreview from '../components/TicketPreview';
+import FanTicketManager from '../components/FanTicketManager';
 
 const StadiumMockup = dynamic(() => import('../components/StadiumMockup'), { ssr: false });
 import { useCrowd } from '../contexts/CrowdContext';
-import { useFanChat } from '../hooks/useFanChat';
+import FanChatWidget from '../components/FanChatWidget';
 import toastStyles from './toast.module.css';
+import { useFanChat } from '../hooks/useFanChat';
 
 export default function FanPage() {
   const { data: session } = useSession();
@@ -73,110 +73,16 @@ export default function FanPage() {
   }, [incidents, gates]);
 
   const [ticket, setTicket] = useState(defaultTicket);
-  const [saved, setSaved] = useState(false);
-  const [activeTab, setActiveTab] = useState('seat'); // 'seat' | 'match' | 'holder'
 
   const [routeMode, setRouteMode] = useState('hide');
   const [selectedAmenityId, setSelectedAmenityId] = useState('Burgers');
   const [amenityFilter, setAmenityFilter] = useState('All');
 
-  const {
-    isChatOpen, setIsChatOpen,
-    chatInput, setChatInput,
-    isTyping, chatMessages,
-    messagesEndRef, handleSendMessage
-  } = useFanChat({
+  const chatHook = useFanChat({
     ticket, matches, gates, incidents, stats, transportation,
     setRouteMode, setSelectedAmenityId, setAmenityFilter
   });
 
-  const chipsRef = useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(false);
-
-  const updateScrollArrows = () => {
-    const el = chipsRef.current;
-    if (!el) return;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    setShowLeftArrow(scrollLeft > 2);
-    setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 2);
-  };
-
-  useEffect(() => {
-    if (isChatOpen) {
-      const timer = setTimeout(() => {
-        updateScrollArrows();
-      }, 150);
-      window.addEventListener('resize', updateScrollArrows);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('resize', updateScrollArrows);
-      };
-    }
-  }, [isChatOpen]);
-
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeftRef = useRef(0);
-  const isDragging = useRef(false);
-
-  const handleMouseDown = (e) => {
-    const el = chipsRef.current;
-    if (!el) return;
-    isDown.current = true;
-    isDragging.current = false;
-    el.classList.add(styles.dragActive);
-    startX.current = e.pageX - el.offsetLeft;
-    scrollLeftRef.current = el.scrollLeft;
-  };
-
-  const handleMouseLeave = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    if (el) {
-      el.classList.remove(styles.dragActive);
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    if (el) {
-      el.classList.remove(styles.dragActive);
-    }
-    setTimeout(() => {
-      isDragging.current = false;
-    }, 50);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current) return;
-    e.preventDefault();
-    const el = chipsRef.current;
-    if (!el) return;
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    if (Math.abs(x - startX.current) > 5) {
-      isDragging.current = true;
-    }
-    el.scrollLeft = scrollLeftRef.current - walk;
-  };
-
-  const handleChipClick = (e, text) => {
-    if (isDragging.current) {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-    }
-    handleSendMessage(text);
-  };
-
-  const update = (field, value) => {
-    setTicket(prev => ({ ...prev, [field]: value }));
-    setSaved(false);
-  };
 
   const updatesRef = useRef(null);
   const updatesIsDown = useRef(false);
@@ -234,19 +140,6 @@ export default function FanPage() {
     };
   }, [incidents, gates]);
 
-  const [ticketAnimating, setTicketAnimating] = useState(false);
-
-  const handleSave = () => {
-    setSaved(true);
-    setTicketAnimating(true);
-    setTimeout(() => setSaved(false), 2500);
-    setTimeout(() => setTicketAnimating(false), 700);
-  };
-
-  const handleReset = () => {
-    setTicket(defaultTicket);
-    setSaved(false);
-  };
 
   const handleGetNotification = () => {
     const congestedGates = gates.filter(g => g.status === 'CONGESTED').map(g => ({
@@ -297,7 +190,7 @@ export default function FanPage() {
         <div className={styles.navControlGroup}>
           <div className={styles.navBrand}>
             <span className={styles.trophySvg}>
-              <Image priority src="/trophy.svg" alt="Trophy Logo" width={36} height={36} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+              <Image priority src="/trophy.svg" alt="Trophy Logo" width={36} height={36} className={styles.inlineMiddle} />
             </span>
             <span className={styles.navBrandText}>FIFA WC 2026</span>
           </div>
@@ -376,212 +269,13 @@ export default function FanPage() {
       <main className={styles.main}>
 
         {/* ===== MY TICKET SECTION ===== */}
-        <section className={styles.section} id="my-ticket-section">
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionLabel}>
-              <span className={styles.sectionDot} style={{ background: '#f9d450' }}></span>
-              MY TICKET
-            </div>
-            <div className={styles.ticketActions}>
-              <button className={styles.resetBtn} onClick={handleReset} id="btn-reset-ticket">
-                <FontAwesomeIcon icon={faRotateLeft} style={{ marginRight: '6px' }} /> Reset
-              </button>
-              <button
-                className={`${styles.saveBtn} ${saved ? styles.saveBtnSuccess : ''}`}
-                onClick={handleSave}
-                id="btn-save-ticket"
-              >
-                {saved ? (
-                  <>
-                    <FontAwesomeIcon icon={faCheck} style={{ marginRight: '6px' }} /> Saved!
-                  </>
-                ) : (
-                  <>
-                    <FontAwesomeIcon icon={faSave} style={{ marginRight: '6px' }} /> Save Ticket
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.ticketLayout}>
-            {/* LEFT: Preview */}
-            <div className={styles.ticketPreviewWrap}>
-              <TicketPreview ticket={ticket} animating={ticketAnimating} />
-              <p className={styles.ticketHint}>✦ Edit fields on the right to customise your ticket</p>
-            </div>
-
-            {/* RIGHT: Editor */}
-            <div className={styles.ticketEditor}>
-              {/* Tab bar */}
-              <div className={styles.editorTabs}>
-                {[
-                  { key: 'seat', label: 'Seat Info', icon: faChair },
-                  { key: 'match', label: 'Match', icon: faCalendarAlt },
-                  { key: 'holder', label: 'Holder', icon: faUser },
-                ].map(tab => (
-                  <button
-                    key={tab.key}
-                    className={`${styles.editorTab} ${activeTab === tab.key ? styles.editorTabActive : ''}`}
-                    onClick={() => setActiveTab(tab.key)}
-                    id={`tab-${tab.key}`}
-                  >
-                    <FontAwesomeIcon icon={tab.icon} style={{ marginRight: '6px' }} />
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className={styles.editorFields}>
-
-                {/* ---- SEAT TAB ---- */}
-                {activeTab === 'seat' && (
-                  <>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel}>Category</label>
-                      <div className={styles.categoryPicker}>
-                        {TICKET_CATEGORIES.map(cat => (
-                          <button
-                            key={cat}
-                            className={`${styles.catBtn} ${ticket.category === cat ? styles.catBtnActive : ''}`}
-                            onClick={() => update('category', cat)}
-                            id={`cat-${cat.toLowerCase()}`}
-                          >
-                            {cat}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className={styles.fieldRow}>
-                      <div className={styles.fieldGroup}>
-                        <label className={styles.fieldLabel} htmlFor="field-gate">Gate</label>
-                        <select
-                          id="field-gate"
-                          className={styles.fieldSelect}
-                          value={ticket.gate}
-                          onChange={e => update('gate', e.target.value)}
-                        >
-                          {GATES.map(g => <option key={g} value={g}>{g}</option>)}
-                        </select>
-                      </div>
-
-                      <div className={styles.fieldGroup}>
-                        <label className={styles.fieldLabel} htmlFor="field-section">Section</label>
-                        <select
-                          id="field-section"
-                          className={styles.fieldSelect}
-                          value={ticket.section}
-                          onChange={e => update('section', e.target.value)}
-                        >
-                          {SECTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className={styles.fieldRow}>
-                      <div className={styles.fieldGroup}>
-                        <label className={styles.fieldLabel} htmlFor="field-row">Row</label>
-                        <input
-                          id="field-row"
-                          type="text"
-                          className={styles.fieldInput}
-                          value={ticket.row}
-                          onChange={e => update('row', e.target.value)}
-                          placeholder="e.g. 12"
-                          maxLength={4}
-                        />
-                      </div>
-
-                      <div className={styles.fieldGroup}>
-                        <label className={styles.fieldLabel} htmlFor="field-seat">Seat</label>
-                        <input
-                          id="field-seat"
-                          type="text"
-                          className={styles.fieldInput}
-                          value={ticket.seat}
-                          onChange={e => update('seat', e.target.value)}
-                          placeholder="e.g. 34"
-                          maxLength={4}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* ---- MATCH TAB ---- */}
-                {activeTab === 'match' && (
-                  <>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel} htmlFor="field-match">Match</label>
-                      <input
-                        id="field-match"
-                        type="text"
-                        className={styles.fieldInput}
-                        value={ticket.match}
-                        onChange={e => update('match', e.target.value)}
-                        placeholder="e.g. USA vs MEX"
-                      />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel} htmlFor="field-matchdate">Date & Time</label>
-                      <input
-                        id="field-matchdate"
-                        type="text"
-                        className={styles.fieldInput}
-                        value={ticket.matchDate}
-                        onChange={e => update('matchDate', e.target.value)}
-                        placeholder="e.g. Jun 11, 2026 — 18:00"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* ---- HOLDER TAB ---- */}
-                {activeTab === 'holder' && (
-                  <>
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel} htmlFor="field-name">Ticket Holder Name</label>
-                      <input
-                        id="field-name"
-                        type="text"
-                        className={styles.fieldInput}
-                        value={ticket.holderName}
-                        onChange={e => update('holderName', e.target.value)}
-                        placeholder="Full name"
-                        maxLength={40}
-                      />
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                      <label className={styles.fieldLabel} htmlFor="field-barcode">Barcode / Reference</label>
-                      <input
-                        id="field-barcode"
-                        type="text"
-                        className={styles.fieldInput}
-                        value={ticket.barcode}
-                        onChange={e => update('barcode', e.target.value)}
-                        placeholder="FIFA2026-..."
-                        maxLength={32}
-                      />
-                    </div>
-
-                    <div className={styles.fieldNote}>
-                      <FontAwesomeIcon icon={faInfoCircle} style={{ marginRight: '6px' }} /> This is a digital display ticket. For official tickets, visit FIFA.com
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
+        <FanTicketManager ticket={ticket} setTicket={setTicket} />
 
         {/* Stadium Mockup Section */}
         <section className={styles.section} id="stadium-mockup-section">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>
-              <span className={styles.sectionDot} style={{ background: 'var(--fifa-gold)' }}></span>
+              <span className={`${styles.sectionDot} ${styles.bgGold}`}></span>
               STADIUM OVERVIEW
             </div>
             <div className={styles.stadiumMockupBadge}>🏟️ MetLife Stadium · NJ</div>
@@ -602,7 +296,7 @@ export default function FanPage() {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>
-              <span className={styles.sectionDot} style={{ background: '#ef4444' }}></span>
+              <span className={`${styles.sectionDot} ${styles.bgRed}`}></span>
               LIVE STADIUM UPDATES
             </div>
           </div>
@@ -639,8 +333,8 @@ export default function FanPage() {
                 </div>
               ))}
               {gates.filter(g => g.status === 'CONGESTED').map((g) => (
-                <div key={g.id} className={styles.tipCard} style={{ borderColor: 'rgba(239,68,68,0.3)' }}>
-                  <span className={styles.tipIcon} style={{ color: '#ef4444' }}>
+                <div key={g.id} className={`${styles.tipCard} ${styles.borderRed}`}>
+                  <span className={`${styles.tipIcon} ${styles.textRed}`}>
                     <FontAwesomeIcon icon={faUsers} />
                   </span>
                   <h2 className={styles.tipTitle}>High Congestion</h2>
@@ -648,8 +342,8 @@ export default function FanPage() {
                 </div>
               ))}
               {incidents.length === 0 && gates.filter(g => g.status === 'CONGESTED').length === 0 && (
-                <div className={styles.tipCard} style={{ borderColor: 'rgba(74,222,128,0.3)' }}>
-                  <span className={styles.tipIcon} style={{ color: '#4ade80' }}>
+                <div className={`${styles.tipCard} ${styles.borderGreen}`}>
+                  <span className={`${styles.tipIcon} ${styles.textGreen}`}>
                     <FontAwesomeIcon icon={faCheck} />
                   </span>
                   <h2 className={styles.tipTitle}>All Clear</h2>
@@ -677,7 +371,7 @@ export default function FanPage() {
         <section className={styles.section} id="transportation-section">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>
-              <span className={styles.sectionDot} style={{ background: '#3b82f6' }}></span>
+              <span className={`${styles.sectionDot} ${styles.bgBlue}`}></span>
               TRANSPORTATION
             </div>
           </div>
@@ -732,10 +426,10 @@ export default function FanPage() {
                   </div>
                 </div>
                 <div className={styles.matchMeta}>
-                  <span><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '6px' }} /> {m.date}</span>
-                  <span><FontAwesomeIcon icon={faClock} style={{ marginRight: '6px' }} /> {m.time}</span>
+                  <span><FontAwesomeIcon icon={faCalendarAlt} className={styles.iconMargin} /> {m.date}</span>
+                  <span><FontAwesomeIcon icon={faClock} className={styles.iconMargin} /> {m.time}</span>
                 </div>
-                <div className={styles.matchStadium}><FontAwesomeIcon icon={faLocationDot} style={{ marginRight: '6px' }} /> {m.stadium}</div>
+                <div className={styles.matchStadium}><FontAwesomeIcon icon={faLocationDot} className={styles.iconMargin} /> {m.stadium}</div>
               </div>
             ))}
           </div>
@@ -745,7 +439,7 @@ export default function FanPage() {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>
-              <span className={styles.sectionDot} style={{ background: 'var(--fifa-red-light)' }}></span>
+              <span className={`${styles.sectionDot} ${styles.bgLightRed}`}></span>
               APP FEATURES
             </div>
           </div>
@@ -775,132 +469,19 @@ export default function FanPage() {
 
       </main>
 
+
       {/* Floating Chat Button */}
       <button
-        className={`${styles.chatButton} ${isChatOpen ? styles.chatButtonActive : ''}`}
-        onClick={() => setIsChatOpen(!isChatOpen)}
+        className={`${styles.chatButton} ${chatHook.isChatOpen ? styles.chatButtonActive : ''}`}
+        onClick={() => chatHook.setIsChatOpen(!chatHook.isChatOpen)}
         aria-label="Toggle chat window"
       >
         <span className={styles.chatBtnIcon}>
-          <FontAwesomeIcon icon={isChatOpen ? faXmark : faCommentDots} />
+          <FontAwesomeIcon icon={chatHook.isChatOpen ? faXmark : faCommentDots} />
         </span>
       </button>
 
-      {/* Chat Window */}
-      {isChatOpen && (
-        <div className={styles.chatWindow} id="chat-window">
-          {/* Header */}
-          <div className={styles.chatHeader}>
-            <div className={styles.chatHeaderInfo}>
-              <div className={styles.chatAvatar}>
-                <FontAwesomeIcon icon={faRobot} />
-                <span className={styles.avatarOnline} />
-              </div>
-              <div>
-                <h4 className={styles.chatTitle}>Stadium Assistant</h4>
-                <p className={styles.chatSubtitle}>AI Support • Online</p>
-              </div>
-            </div>
-            <button className={styles.chatCloseBtn} onClick={() => setIsChatOpen(false)} aria-label="Close chat">
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className={styles.chatMessagesContainer}>
-            {chatMessages.map(msg => (
-              <div key={msg.id} className={`${styles.chatMessage} ${msg.sender === 'user' ? styles.chatMessageUser : styles.chatMessageBot}`}>
-                {msg.sender === 'bot' && (
-                  <div className={styles.msgAvatar}>
-                    <FontAwesomeIcon icon={faRobot} />
-                  </div>
-                )}
-                <div className={styles.msgBubble}>
-                  <p className={styles.msgText}>{msg.text}</p>
-                  <span className={styles.msgTime}>{msg.time}</span>
-                </div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className={`${styles.chatMessage} ${styles.chatMessageBot}`}>
-                <div className={styles.msgAvatar}>
-                  <FontAwesomeIcon icon={faRobot} />
-                </div>
-                <div className={styles.msgBubble}>
-                  <div className={styles.typingIndicator}>
-                    <span></span><span></span><span></span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Quick Options / Chips */}
-          <div className={styles.chatQuickChipsContainer}>
-            {showLeftArrow && (
-              <button
-                className={`${styles.chatScrollBtn} ${styles.chatScrollBtnLeft}`}
-                onClick={() => {
-                  const el = chipsRef.current;
-                  if (el) {
-                    el.scrollBy({ left: -120, behavior: 'smooth' });
-                  }
-                }}
-                type="button"
-                aria-label="Scroll left"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-            )}
-            <div
-              className={styles.chatQuickChips}
-              id="chat-quick-chips"
-              ref={chipsRef}
-              onScroll={updateScrollArrows}
-              onMouseDown={handleMouseDown}
-              onMouseLeave={handleMouseLeave}
-              onMouseUp={handleMouseUp}
-              onMouseMove={handleMouseMove}
-            >
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Show route to my Seat")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faTicket} /></span> Find Seat</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Where is the food?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faHamburger} /></span> Find Food</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Where is the restroom?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faRestroom} /></span> Restrooms</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Where is First Aid?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faKitMedical} /></span> First Aid</button>
-              <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "How do I get home?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faTrainSubway} /></span> Transport</button>
-            </div>
-            {showRightArrow && (
-              <button
-                className={`${styles.chatScrollBtn} ${styles.chatScrollBtnRight}`}
-                onClick={() => {
-                  const el = chipsRef.current;
-                  if (el) {
-                    el.scrollBy({ left: 120, behavior: 'smooth' });
-                  }
-                }}
-                type="button"
-                aria-label="Scroll right"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
-            )}
-          </div>
-
-          {/* Input Footer */}
-          <form className={styles.chatInputArea} onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
-            <input
-              type="text"
-              className={styles.chatInput}
-              placeholder="Ask a question..."
-              value={chatInput}
-              onChange={e => setChatInput(e.target.value)}
-            />
-            <button type="submit" className={styles.chatSendBtn} aria-label="Send message">
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </button>
-          </form>
-        </div>
-      )}
+      <FanChatWidget chatHook={chatHook} />
 
       {/* Footer */}
       <footer className={styles.footer}>
