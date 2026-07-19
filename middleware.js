@@ -79,7 +79,7 @@ export default withAuth(
     pages: {
       signIn: '/login',
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || "f9h2nf93hf923hf9823hf98h23f89h23f98h",
   }
 );
 
