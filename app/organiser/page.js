@@ -1,7 +1,14 @@
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../../lib/auth';
 import OrganiserDashboard from './OrganiserDashboard';
 
-export const revalidate = 60; // Cache the route data for 60 seconds
+export default async function OrganiserPage() {
+  const session = await getServerSession(authOptions);
 
-export default function OrganiserPage() {
+  if (!session) {
+    redirect('/login?callbackUrl=/organiser');
+  }
+
   return <OrganiserDashboard />;
 }
