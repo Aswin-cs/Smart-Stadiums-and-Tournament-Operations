@@ -31,4 +31,14 @@ const customJestConfig = {
   },
 };
 
-module.exports = createJestConfig(customJestConfig);
+module.exports = async () => {
+  const nextJestConfig = await createJestConfig(customJestConfig)();
+  
+  // Allow Jest to transpile ESM packages inside node_modules
+  nextJestConfig.transformIgnorePatterns = [
+    '/node_modules/(?!(jose|@panva|openid-client|next-auth)/)',
+    '^.+\\.module\\.(css|sass|scss)$',
+  ];
+  
+  return nextJestConfig;
+};
