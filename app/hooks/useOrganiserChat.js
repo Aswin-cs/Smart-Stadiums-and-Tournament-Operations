@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { getCsrfToken } from '../lib/utils/csrf';
 
 export function useOrganiserChat({ gates, incidents, stats }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -38,6 +39,7 @@ export function useOrganiserChat({ gates, incidents, stats }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': getCsrfToken()
         },
         body: JSON.stringify({
           from: 'organiser',

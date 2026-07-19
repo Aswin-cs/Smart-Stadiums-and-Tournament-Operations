@@ -8,15 +8,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCommentDots, faXmark, faPaperPlane, faRobot,
   faChevronRight, faChevronLeft, faDoorOpen, faExclamationTriangle,
-  faUsers, faLightbulb, faCog, faUserShield, faUser, faTemperatureHigh
+  faUsers, faLightbulb, faCog, faUserShield, faUser, faTemperatureHigh,
+  faClipboardList, faCheck
 } from '@fortawesome/free-solid-svg-icons';
 
 import dynamic from 'next/dynamic';
 import { useCrowd } from '../contexts/CrowdContext';
+import { initialVolunteerTasks } from '../lib/data/organiser-data';
 import { useOrganiserChat } from '../hooks/useOrganiserChat';
 
 const OrganiserStadiumMap = dynamic(() => import('../components/OrganiserStadiumMap'), { ssr: false });
 import OrganiserChatWidget from '../components/OrganiserChatWidget';
+
+import OrganiserStatsRow from '../components/organiser/OrganiserStatsRow';
+import OrganiserWasteManagement from '../components/organiser/OrganiserWasteManagement';
+import OrganiserVolunteerBoard from '../components/organiser/OrganiserVolunteerBoard';
+import OrganiserIncidentFeed from '../components/organiser/OrganiserIncidentFeed';
+import OrganiserGateStatus from '../components/organiser/OrganiserGateStatus';
+import OrganiserControlPanel from '../components/organiser/OrganiserControlPanel';
+import { getCsrfToken } from '../lib/utils/csrf';
 
 export default function OrganiserPage() {
   const { data: session } = useSession();
@@ -38,6 +48,7 @@ export default function OrganiserPage() {
   const chatHook = useOrganiserChat({ gates, incidents, stats });
 
   const [notifications, setNotifications] = useState([]);
+  const [volunteerTasks, setVolunteerTasks] = useState(initialVolunteerTasks);
   const activeWarningsRef = useRef({
     'Gate B': true,
     'Gate C': true
@@ -50,7 +61,10 @@ export default function OrganiserPage() {
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': getCsrfToken()
+          },
           body: JSON.stringify({
             from: 'organiser',
             requestType: 'notification',
@@ -112,7 +126,10 @@ export default function OrganiserPage() {
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': getCsrfToken()
+          },
           body: JSON.stringify({
             from: 'organiser',
             requestType: 'notification',
@@ -192,6 +209,50 @@ export default function OrganiserPage() {
     setNotifications(prev => prev.filter(n => n.id !== notifId));
   };
 
+  const handleGenerateAiTask = async () => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': getCsrfToken()
+        },
+        body: JSON.stringify({
+          from: 'organiser',
+          requestType: 'submission',
+          message: `Generate exactly ONE urgent volunteer task based on current stadium conditions. Return ONLY a JSON object with this structure: {"task": "Short title", "zone": "Zone Name", "category": "Security|Medical|Hospitality|Waste", "shift": "Immediate", "status": "ACTIVE", "assignee": "AI Assigned"}. Crowd density: ${JSON.stringify(gates)}. Climate: ${climate}.`,
+          stream: false
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate task');
+
+      const data = await response.json();
+      let aiText = data.reply || "";
+      aiText = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+      const newTask = JSON.parse(aiText);
+      newTask.id = `VT-AI-${Math.floor(Math.random() * 1000)}`;
+      setVolunteerTasks(prev => [newTask, ...prev]);
+    } catch (e) {
+      console.error(e);
+      // Fallback if parsing fails
+      setVolunteerTasks(prev => [{
+        id: `VT-AI-${Math.floor(Math.random() * 1000)}`,
+        task: 'Emergency Crowd Control',
+        zone: 'All Gates',
+        category: 'Security',
+        shift: 'Immediate',
+        status: 'ACTIVE',
+        assignee: 'All Available'
+      }, ...prev]);
+    }
+  };
+
+  const markTaskCompleted = (id) => {
+    setVolunteerTasks(prev => prev.map(t => t.id === id ? { ...t, status: 'COMPLETED' } : t));
+  };
+
   const handleEmergencyOpenAllGatesClick = () => {
     if (isEmergencyDisabled) return;
 
@@ -249,7 +310,7 @@ export default function OrganiserPage() {
           <div className={styles.navControlGroup}>
             <div className={styles.navBrand}>
               <Image priority src="/trophy.svg" alt="Website Logo" width={20} height={20} className={styles.iconMargin} />
-              <span className={styles.navBrandText}>FIFA WC 2026</span>
+              <span className={styles.navBrandText}>FIFA World Cup 2026™ GenAI Operations Platform</span>
             </div>
             <div className={styles.navHoverLabel}>Tournament</div>
           </div>
@@ -300,84 +361,18 @@ export default function OrganiserPage() {
             Control Panel
           </button>
 
-          {isSettingsOpen && (
-            <div className={styles.settingsDropdown}>
-              <div className={styles.settingsHeader}>
-                <span className={styles.settingsTitle}>Stadium Control Panel</span>
-                <button className={styles.settingsCloseBtn} onClick={() => setIsSettingsOpen(false)} aria-label="Close settings">
-                  <FontAwesomeIcon icon={faXmark} />
-                </button>
-              </div>
-
-              {/* Simulation switch section */}
-              <div className={styles.settingsSection}>
-                <span className={styles.settingsSectionTitle}>Simulation Settings</span>
-                <div className={styles.settingsToggleRow}>
-                  <span className={styles.settingsLabel}>Auto-Fluctuate Crowd Flow</span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={isAutoSimulating}
-                      onChange={(e) => setIsAutoSimulating(e.target.checked)}
-                      aria-label="Auto-Fluctuate Crowd Flow"
-                    />
-                    <span className={styles.sliderRound}></span>
-                  </label>
-                </div>
-                <div className={styles.settingsBtnRow}>
-                  <button className={`${styles.actionBtn} ${styles.actionBtnSm}`} onClick={handleSimulateOverflow}>
-                    <FontAwesomeIcon icon={faUsers} className={styles.iconMargin} />
-                    Crowd Rush
-                  </button>
-                  <button className={`${styles.actionBtn} ${styles.actionBtnSm}`} onClick={handleReset}>
-                    Reset State
-                  </button>
-                </div>
-              </div>
-
-              {/* Climate Simulation section */}
-              <div className={styles.settingsSection}>
-                <span className={styles.settingsSectionTitle}>Climate Diversity</span>
-                <div className={styles.settingsBtnRow}>
-                  <button className={`${styles.actionBtn} ${styles.actionBtnSm} ${climate === 'HEATWAVE' ? styles.bgHeat : ''}`} onClick={() => handleSimulateClimate('HEATWAVE')}>
-                    <FontAwesomeIcon icon={faTemperatureHigh} className={styles.iconMargin} />
-                    Heatwave
-                  </button>
-                  <button className={`${styles.actionBtn} ${styles.actionBtnSm} ${climate === 'STORM' ? styles.bgStorm : ''}`} onClick={() => handleSimulateClimate('STORM')}>
-                    <FontAwesomeIcon icon={faTemperatureHigh} className={styles.iconMargin} />
-                    Storm
-                  </button>
-                  <button className={`${styles.actionBtn} ${styles.actionBtnSm} ${climate === 'CLEAR' ? styles.bgClear : ''}`} onClick={() => handleSimulateClimate('CLEAR')}>
-                    ☀️ Clear
-                  </button>
-                </div>
-              </div>
-
-              {/* Adjust value section */}
-              <div className={styles.settingsSection}>
-                <span className={styles.settingsSectionTitle}>Adjust Gate Densities</span>
-                <div className={styles.settingsSlidersGrid}>
-                  {gates.map((gate) => (
-                    <div key={gate.id} className={styles.settingsSliderRow}>
-                      <div className={styles.sliderHeader}>
-                        <span className={styles.sliderLabel}>{gate.id} ({gate.status})</span>
-                        <span className={styles.sliderValue}>{gate.density}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        className={styles.sliderInput}
-                        min="0"
-                        max="100"
-                        value={gate.density}
-                        onChange={(e) => handleUpdateGateDensity(gate.id, parseInt(e.target.value))}
-                        aria-label={`Adjust density for ${gate.id}`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          <OrganiserControlPanel
+            isSettingsOpen={isSettingsOpen}
+            setIsSettingsOpen={setIsSettingsOpen}
+            isAutoSimulating={isAutoSimulating}
+            setIsAutoSimulating={setIsAutoSimulating}
+            handleSimulateOverflow={handleSimulateOverflow}
+            handleReset={handleReset}
+            climate={climate}
+            handleSimulateClimate={handleSimulateClimate}
+            gates={gates}
+            handleUpdateGateDensity={handleUpdateGateDensity}
+          />
 
           <button
             className={`${styles.emergencyBtn} ${isEmergencyDisabled ? styles.disabled : ''}`}
@@ -392,23 +387,7 @@ export default function OrganiserPage() {
 
       <main className={styles.main}>
         {/* Stats Row */}
-        <div className={styles.statsRow}>
-          {displayStats.map((s, i) => (
-            <div key={i} className={styles.statCard}>
-              <div className={styles.statTop}>
-                <span className={styles.statIcon}>
-                  <FontAwesomeIcon icon={s.icon} style={{ color: s.iconColor }} />
-                </span>
-                <span className={styles.statTrend} style={{ color: s.trendColor, borderColor: s.trendColor + '44', backgroundColor: s.trendColor + '11' }}>{s.trend}</span>
-              </div>
-              <div className={styles.statValueRow}>
-                <span className={styles.statValue}>{s.value}</span>
-                <span className={styles.statSub}>{s.sub}</span>
-              </div>
-              <div className={styles.statLabel}>{s.label}</div>
-            </div>
-          ))}
-        </div>
+        <OrganiserStatsRow displayStats={displayStats} />
 
         {/* Main Grid */}
         <div className={styles.contentGrid}>
@@ -420,122 +399,35 @@ export default function OrganiserPage() {
               <div className={styles.panelHeader}>
                 <div className={styles.panelTitle}>
                   <span className={`${styles.panelDot} ${styles.bgBlue}`}></span>
-                  Live Crowd Heatmap
+                  GenAI Crowd Management Intelligence
                 </div>
               </div>
               <OrganiserStadiumMap gates={gates} incidents={incidents} climate={climate} />
             </div>
 
             {/* Waste Management */}
-            <section className={styles.panel}>
-              <div className={styles.panelHeader}>
-                <h2 className={styles.panelTitle}>
-                  <span className={`${styles.panelDot} ${styles.bgGreen}`}></span>
-                  AI Sustainability & Waste Intelligence
-                </h2>
-              </div>
-              <div className={styles.gateList}>
-                {bins.map((b, i) => (
-                  <div key={i} className={styles.gateItemWrapper}>
-                    <div className={styles.gateItem}>
-                      <div className={styles.gateInfo}>
-                        <p className={styles.gateTitle}>{b.id} - {b.location}</p>
-                        <p className={styles.gateFlow}>Fill Level: {b.fillLevel}%</p>
-                      </div>
-                      <div className={styles.gateActions}>
-                        <span className={styles.statusBadge} data-status={b.fillLevel > 80 ? 'CONGESTED' : 'OPEN'}>
-                          {b.fillLevel > 80 ? 'FULL' : 'OK'}
-                        </span>
-                        <button 
-                          className={styles.gateBtn}
-                          onClick={() => handleDeployStaffToBin(b.id)}
-                        >
-                          Deploy Staff
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+            <OrganiserWasteManagement bins={bins} handleDeployStaffToBin={handleDeployStaffToBin} />
+
+            {/* Volunteer Task Board */}
+            <OrganiserVolunteerBoard 
+              volunteerTasks={volunteerTasks} 
+              handleGenerateAiTask={handleGenerateAiTask} 
+              markTaskCompleted={markTaskCompleted} 
+            />
           </div>
 
           {/* Right Column: Feeds */}
           <div className={styles.rightCol}>
             {/* Live Incidents */}
-            <section className={styles.panel}>
-              <div className={styles.panelHeader}>
-                <h2 className={styles.panelTitle}>
-                  <span className={`${styles.panelDot} ${styles.bgRed}`}></span>
-                  Live Incident Feed
-                </h2>
-                <span className={styles.panelCount}>{incidents.length} active</span>
-              </div>
-              <div className={styles.taskList}>
-                {incidents.map((inc) => (
-                  <div key={inc.id} className={styles.taskItem}>
-                    <div className={styles.taskContent}>
-                      <p className={styles.taskTitle}>{inc.title}</p>
-                      <div className={styles.taskMeta}>
-                        <span className={styles.taskCategory}>{inc.location}</span>
-                        <span className={styles.taskDue}>{inc.time}</span>
-                      </div>
-                    </div>
-                    <span className={styles.priorityBadge} data-type={inc.type}>
-                      {inc.type}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </section>
+            <OrganiserIncidentFeed incidents={incidents} />
 
             {/* Gate Status */}
-            <section className={styles.panel}>
-              <div className={styles.panelHeader}>
-                <h2 className={styles.panelTitle}>
-                  <span className={`${styles.panelDot} ${styles.bgGold}`}></span>
-                  Gate Status
-                </h2>
-              </div>
-              <div className={styles.gateList}>
-                {gates.map((g, i) => (
-                  <div key={i} className={styles.gateItemWrapper}>
-                    <div className={styles.gateItem}>
-                      <div className={styles.gateInfo}>
-                        <p className={styles.gateTitle}>{g.id}</p>
-                        <p className={styles.gateFlow}>Flow: {g.flow}</p>
-                      </div>
-                      <div className={styles.gateActions}>
-                        <span className={styles.statusBadge} data-status={g.status}>{g.status}</span>
-                        <button 
-                          className={styles.gateBtn}
-                          onClick={() => setActiveGateManage(activeGateManage === g.id ? null : g.id)}
-                        >
-                          {activeGateManage === g.id ? 'Close' : 'Manage'}
-                        </button>
-                      </div>
-                    </div>
-                    {activeGateManage === g.id && (
-                      <div className={styles.inlineGateManager}>
-                        <div className={styles.sliderHeader}>
-                          <span className={styles.sliderLabel}>Density</span>
-                          <span className={styles.sliderValue}>{g.density}%</span>
-                        </div>
-                        <input
-                          type="range"
-                          className={styles.sliderInput}
-                          min="0"
-                          max="100"
-                          value={g.density}
-                          onChange={(e) => handleUpdateGateDensity(g.id, parseInt(e.target.value))}
-                          aria-label={`Adjust density for ${g.id}`}
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
+            <OrganiserGateStatus 
+              gates={gates} 
+              activeGateManage={activeGateManage} 
+              setActiveGateManage={setActiveGateManage} 
+              handleUpdateGateDensity={handleUpdateGateDensity} 
+            />
 
 
           </div>
@@ -592,18 +484,8 @@ export default function OrganiserPage() {
                 <span className={styles.notificationMeta}>Current Density: {n.density}% · {n.time}</span>
                 {n.actions && n.actions.length > 0 && (
                   <button 
+                    className={styles.acceptBtn}
                     onClick={() => handleAcceptAction(n.actions, n.id)}
-                    style={{
-                      background: 'rgba(255,255,255,0.15)',
-                      border: '1px solid rgba(255,255,255,0.3)',
-                      color: 'white',
-                      padding: '4px 12px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem',
-                      fontWeight: '600',
-                      backdropFilter: 'blur(4px)'
-                    }}
                   >
                     Accept
                   </button>

@@ -12,7 +12,7 @@ import {
   faXmark, faPaperPlane, faRobot, faUser, faChevronRight, faChevronLeft,
   faTicket, faKitMedical, faBell, faRotateLeft, faSave, faCheck, faChair,
   faCalendarAlt, faInfoCircle, faTrainSubway, faMobileScreen, faTemperatureHigh, faClock, faLocationDot, faClipboardList,
-  faFutbol, faBuilding, faUsers
+  faFutbol, faBuilding, faUsers, faEye
 } from '@fortawesome/free-solid-svg-icons';
 
 import { matches, stadiums, fanTips, defaultTicket, getNearestAmenity } from '../lib/data/fan-data';
@@ -24,12 +24,15 @@ import { useCrowd } from '../contexts/CrowdContext';
 import FanChatWidget from '../components/FanChatWidget';
 import toastStyles from './toast.module.css';
 import { useFanChat } from '../hooks/useFanChat';
+import { useDragScroll } from '../hooks/useDragScroll';
+import { StadiumRouteProvider } from '../contexts/StadiumRouteContext';
 
 export default function FanPage() {
   const { data: session } = useSession();
   const { gates, incidents, stats, transportation } = useCrowd();
   const [toastNotifications, setToastNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [highContrast, setHighContrast] = useState(false);
   const prevIncidentsRef = useRef(incidents);
   const prevGatesRef = useRef(gates);
   const originalTitleRef = useRef('');
@@ -84,61 +87,17 @@ export default function FanPage() {
   });
 
 
-  const updatesRef = useRef(null);
-  const updatesIsDown = useRef(false);
-  const updatesStartX = useRef(0);
-  const updatesScrollLeftRef = useRef(0);
-  const updatesIsDragging = useRef(false);
-
-  const handleUpdatesMouseDown = (e) => {
-    const el = updatesRef.current;
-    if (!el) return;
-    updatesIsDown.current = true;
-    updatesIsDragging.current = false;
-    updatesStartX.current = e.pageX - el.offsetLeft;
-    updatesScrollLeftRef.current = el.scrollLeft;
-  };
-  const handleUpdatesMouseLeave = () => {
-    updatesIsDown.current = false;
-  };
-  const handleUpdatesMouseUp = () => {
-    updatesIsDown.current = false;
-    setTimeout(() => { updatesIsDragging.current = false; }, 50);
-  };
-  const handleUpdatesMouseMove = (e) => {
-    if (!updatesIsDown.current) return;
-    e.preventDefault();
-    const el = updatesRef.current;
-    if (!el) return;
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - updatesStartX.current) * 1.5;
-    if (Math.abs(x - updatesStartX.current) > 5) {
-      updatesIsDragging.current = true;
-    }
-    el.scrollLeft = updatesScrollLeftRef.current - walk;
-  };
-
-  const [showUpdatesLeftArrow, setShowUpdatesLeftArrow] = useState(false);
-  const [showUpdatesRightArrow, setShowUpdatesRightArrow] = useState(false);
-
-  const updateUpdatesScrollArrows = () => {
-    const el = updatesRef.current;
-    if (!el) return;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    setShowUpdatesLeftArrow(scrollLeft > 2);
-    setShowUpdatesRightArrow(scrollLeft + clientWidth < scrollWidth - 2);
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      updateUpdatesScrollArrows();
-    }, 150);
-    window.addEventListener('resize', updateUpdatesScrollArrows);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', updateUpdatesScrollArrows);
-    };
-  }, [incidents, gates]);
+  const {
+    containerRef: updatesRef,
+    showLeftArrow: showUpdatesLeftArrow,
+    showRightArrow: showUpdatesRightArrow,
+    updateScrollArrows: updateUpdatesScrollArrows,
+    handleMouseDown: handleUpdatesMouseDown,
+    handleMouseLeave: handleUpdatesMouseLeave,
+    handleMouseUp: handleUpdatesMouseUp,
+    handleMouseMove: handleUpdatesMouseMove,
+    scrollBy: scrollUpdatesBy,
+  } = useDragScroll({ deps: [incidents, gates] });
 
 
   const handleGetNotification = () => {
@@ -169,7 +128,7 @@ export default function FanPage() {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${highContrast ? styles.highContrast : ''}`}>
       {/* Background */}
       <div className={styles.bg}>
         <div className={styles.bgGlow1}></div>
@@ -192,14 +151,24 @@ export default function FanPage() {
             <span className={styles.trophySvg}>
               <Image priority src="/trophy.svg" alt="Trophy Logo" width={36} height={36} className={styles.inlineMiddle} />
             </span>
-            <span className={styles.navBrandText}>FIFA WC 2026</span>
+            <span className={styles.navBrandText}>FIFA World Cup 2026™ GenAI Fan Experience</span>
           </div>
-          <div className={styles.navHoverLabel}>Tournament</div>
+          <div className={styles.navHoverLabel}>GenAI Fan Experience</div>
         </div>
 
         <div className={styles.navBadge}>FAN ZONE</div>
         
         <div className={styles.navActions}>
+          <div className={styles.navControlGroup}>
+            <button 
+              className={`${styles.iconBtn} ${highContrast ? styles.iconBtnActive : ''}`}
+              onClick={() => setHighContrast(!highContrast)}
+              aria-label="Toggle High Contrast"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </button>
+            <div className={styles.navHoverLabel}>High Contrast</div>
+          </div>
           <div className={styles.navControlGroup}>
             <button onClick={handleGetNotification} className={styles.updateBtn} aria-label="Get Notifications">
               <FontAwesomeIcon icon={faBell} />
@@ -266,7 +235,17 @@ export default function FanPage() {
         </div>
       </header>
 
-      <main className={styles.main}>
+      <StadiumRouteProvider value={{
+        ticket,
+        routeMode, setRouteMode,
+        selectedAmenityId, setSelectedAmenityId,
+        amenityFilter, setAmenityFilter,
+        accessibilityMode: chatHook.accessibilityMode,
+        update: (type, val) => {
+          if (type === 'gate') setTicket({ ...ticket, gate: val });
+        }
+      }}>
+        <main className={styles.main}>
 
         {/* ===== MY TICKET SECTION ===== */}
         <FanTicketManager ticket={ticket} setTicket={setTicket} />
@@ -280,16 +259,7 @@ export default function FanPage() {
             </div>
             <div className={styles.stadiumMockupBadge}>🏟️ MetLife Stadium · NJ</div>
           </div>
-          <StadiumMockup
-            ticket={ticket}
-            onSelectGate={(gateName) => update('gate', gateName)}
-            routeMode={routeMode}
-            setRouteMode={setRouteMode}
-            selectedAmenityId={selectedAmenityId}
-            setSelectedAmenityId={setSelectedAmenityId}
-            amenityFilter={amenityFilter}
-            setAmenityFilter={setAmenityFilter}
-          />
+          <StadiumMockup />
         </section>
 
         {/* Live Stadium Updates */}
@@ -304,10 +274,7 @@ export default function FanPage() {
             {showUpdatesLeftArrow && (
               <button
                 className={`${styles.updatesScrollBtn} ${styles.updatesScrollBtnLeft}`}
-                onClick={() => {
-                  const el = updatesRef.current;
-                  if (el) el.scrollBy({ left: -264, behavior: 'smooth' });
-                }}
+                onClick={() => scrollUpdatesBy(-264)}
                 type="button"
                 aria-label="Scroll left"
               >
@@ -354,10 +321,7 @@ export default function FanPage() {
             {showUpdatesRightArrow && (
               <button
                 className={`${styles.updatesScrollBtn} ${styles.updatesScrollBtnRight}`}
-                onClick={() => {
-                  const el = updatesRef.current;
-                  if (el) el.scrollBy({ left: 264, behavior: 'smooth' });
-                }}
+                onClick={() => scrollUpdatesBy(264)}
                 type="button"
                 aria-label="Scroll right"
               >
@@ -396,7 +360,6 @@ export default function FanPage() {
               <span className={styles.sectionDot}></span>
               UPCOMING MATCHES
             </div>
-
           </div>
 
           <div className={styles.matchGrid}>
@@ -467,7 +430,8 @@ export default function FanPage() {
           <div className={styles.ctaIcon}><FontAwesomeIcon icon={faClipboardList} /></div>
         </section>
 
-      </main>
+        </main>
+      </StadiumRouteProvider>
 
 
       {/* Floating Chat Button */}

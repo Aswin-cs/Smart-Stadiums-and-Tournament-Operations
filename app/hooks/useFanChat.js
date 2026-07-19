@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { getNearestAmenity } from '../lib/data/fan-data';
+import { getCsrfToken } from '../lib/utils/csrf';
 
 export function useFanChat({ ticket, matches, gates, incidents, stats, transportation, setRouteMode, setSelectedAmenityId, setAmenityFilter }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -46,7 +47,8 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
     const wantsFood = hasAny(lower, ['food', 'eat', 'burger', 'burgers', 'pizza', 'beer', 'snack', 'snacks', 'coffee', 'hotdog', 'hotdogs']);
     const wantsFacility = hasAny(lower, ['toilet', 'restroom', 'washroom', 'loo', 'bathroom']);
     const wantsEmergency = hasAny(lower, ['exit', 'emergency', 'medical', 'first aid']);
-    const wantsAmenity = wantsFood || wantsFacility || wantsEmergency;
+    const wantsAccessibility = hasAny(lower, ['wheelchair', 'accessible', 'sensory', 'disability', 'ramp']);
+    const wantsAmenity = wantsFood || wantsFacility || wantsEmergency || wantsAccessibility;
 
     const fromGate = hasAny(lower, ['gate', 'entrance']);
     const fromSeat = hasAny(lower, ['seat', 'sit', 'row']);
@@ -55,11 +57,13 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
     let targetFood = 'Burgers';
     let targetFacility = 'Restroom North';
     let targetEmergency = 'First Aid';
+    let targetAccessibility = 'Wheelchair Ramp A';
 
     if (wantsAmenity) {
       targetFood = getNearestAmenity(ticket.section, 'food');
       targetFacility = getNearestAmenity(ticket.section, 'facility');
       targetEmergency = getNearestAmenity(ticket.section, 'emergency');
+      targetAccessibility = getNearestAmenity(ticket.section, 'accessibility');
     }
 
     if (hasAny(lower, ['burger', 'burgers'])) targetFood = 'Burgers';
@@ -78,6 +82,10 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
     } else if (wantsEmergency) {
       setAmenityFilter('emergency');
       setSelectedAmenityId(targetEmergency);
+    } else if (wantsAccessibility) {
+      setAmenityFilter('accessibility');
+      setSelectedAmenityId(targetAccessibility);
+      setAccessibilityMode(true);
     }
 
     if (wantsAmenity) {
@@ -94,6 +102,7 @@ export function useFanChat({ ticket, matches, gates, incidents, stats, transport
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': getCsrfToken()
         },
         body: JSON.stringify({ 
           from: 'fan', 

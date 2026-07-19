@@ -17,9 +17,21 @@ jest.mock('../../../app/contexts/CrowdContext', () => ({
   }))
 }));
 
-jest.mock('../../../app/components/FanChatWidget', () => () => <div data-testid="fan-chat-widget"></div>);
-jest.mock('../../../app/components/FanTicketManager', () => () => <div data-testid="fan-ticket-manager"></div>);
-jest.mock('../../../app/components/StadiumMockup', () => () => <div data-testid="stadium-mockup"></div>);
+jest.mock('../../../app/components/FanChatWidget', () => {
+  const MockFanChatWidget = () => <div data-testid="fan-chat-widget"></div>;
+  MockFanChatWidget.displayName = 'MockFanChatWidget';
+  return MockFanChatWidget;
+});
+jest.mock('../../../app/components/FanTicketManager', () => {
+  const MockFanTicketManager = () => <div data-testid="fan-ticket-manager"></div>;
+  MockFanTicketManager.displayName = 'MockFanTicketManager';
+  return MockFanTicketManager;
+});
+jest.mock('../../../app/components/StadiumMockup', () => {
+  const MockStadiumMockup = () => <div data-testid="stadium-mockup"></div>;
+  MockStadiumMockup.displayName = 'MockStadiumMockup';
+  return MockStadiumMockup;
+});
 
 describe('FanDashboard', () => {
   beforeEach(() => {
@@ -27,9 +39,10 @@ describe('FanDashboard', () => {
   });
 
   it('renders correctly', () => {
-    render(<FanDashboard />);
-    expect(screen.getByText('FIFA WC 2026')).toBeInTheDocument();
+    const { container } = render(<FanDashboard />);
+    expect(screen.getByText('FIFA World Cup 2026™ GenAI Fan Experience')).toBeInTheDocument();
     expect(screen.getByText('Test User')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('handles sign out', () => {

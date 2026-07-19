@@ -27,11 +27,15 @@ jest.mock('../../../app/contexts/CrowdContext', () => ({
   }))
 }));
 
-jest.mock('../../../app/components/OrganiserChatWidget', () => () => <div data-testid="org-chat-widget"></div>);
+jest.mock('../../../app/components/OrganiserChatWidget', () => {
+  const MockOrganiserChatWidget = () => <div data-testid="org-chat-widget"></div>;
+  MockOrganiserChatWidget.displayName = 'MockOrganiserChatWidget';
+  return MockOrganiserChatWidget;
+});
 jest.mock('next/dynamic', () => () => {
-  return function MockOrganiserStadiumMap() {
-    return <div data-testid="org-stadium-map"></div>;
-  };
+  const MockOrganiserStadiumMap = () => <div data-testid="org-stadium-map"></div>;
+  MockOrganiserStadiumMap.displayName = 'MockOrganiserStadiumMap';
+  return MockOrganiserStadiumMap;
 });
 
 describe('OrganiserDashboard', () => {
@@ -65,9 +69,10 @@ describe('OrganiserDashboard', () => {
   });
 
   it('renders correctly', () => {
-    render(<OrganiserDashboard />);
+    const { container } = render(<OrganiserDashboard />);
     expect(screen.getByText('Admin User')).toBeInTheDocument();
     expect(screen.getByTestId('org-chat-widget')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
   });
 
   it('toggles settings panel', () => {

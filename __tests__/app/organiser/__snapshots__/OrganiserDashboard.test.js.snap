@@ -1,0 +1,811 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`OrganiserDashboard renders correctly 1`] = `
+<div>
+  <div
+    class="wrapper"
+  >
+    <div
+      class="bg"
+    >
+      <div
+        class="bgGlow1"
+      />
+      <div
+        class="bgGlow2"
+      />
+      <div
+        class="grid"
+      />
+    </div>
+    <nav
+      class="nav"
+    >
+      <div
+        class="navLeft"
+      >
+        <div
+          class="navControlGroup"
+        >
+          <a
+            aria-label="Back to Home"
+            class="navBack"
+            href="/"
+            id="nav-back-home"
+          >
+            <svg
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 12H5M12 19l-7-7 7-7"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              />
+            </svg>
+            <span
+              class="navBackText"
+            >
+              Back
+            </span>
+          </a>
+          <div
+            class="navHoverLabel"
+          >
+            Back to Home
+          </div>
+        </div>
+        <div
+          class="navControlGroup"
+        >
+          <div
+            class="navBrand"
+          >
+            <img
+              alt="Website Logo"
+              class="iconMargin"
+              data-nimg="1"
+              decoding="async"
+              height="20"
+              src="/trophy.svg"
+              style="color: transparent;"
+              width="20"
+            />
+            <span
+              class="navBrandText"
+            >
+              FIFA World Cup 2026™ GenAI Operations Platform
+            </span>
+          </div>
+          <div
+            class="navHoverLabel"
+          >
+            Tournament
+          </div>
+        </div>
+        <div
+          class="navBadge"
+        >
+          STADIUM OPS
+        </div>
+      </div>
+      <div
+        class="navActions"
+      >
+        <span
+          class="navUserName"
+        >
+          Admin User
+        </span>
+        <div
+          class="navControlGroup"
+        >
+          <button
+            aria-label="Logout"
+            class="authBtnLogout"
+          >
+            <span
+              class="authBtnText"
+            >
+              Logout
+            </span>
+          </button>
+          <div
+            class="navHoverLabel"
+          >
+            Logout
+          </div>
+        </div>
+      </div>
+    </nav>
+    <header
+      class="header"
+    >
+      <div
+        class="headerLeft"
+      >
+        <div
+          class="headerPill"
+        >
+          <span
+            class="headerDot"
+          />
+          LIVE OPERATIONS CENTER
+        </div>
+        <h1
+          class="headerTitle"
+        >
+          CROWD & VENUE 
+          <span
+            class="headerAccent"
+          >
+            MANAGEMENT
+          </span>
+        </h1>
+        <p
+          class="headerSub"
+        >
+          Real-time stadium overview. Monitor gate flow, crowd density, and active incidents.
+        </p>
+      </div>
+      <div
+        class="headerActions posRelative"
+      >
+        <button
+          class="actionBtn"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-gear iconMargin"
+            data-icon="gear"
+            data-prefix="fas"
+            role="img"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M195.1 9.5C198.1-5.3 211.2-16 226.4-16l59.8 0c15.2 0 28.3 10.7 31.3 25.5L332 79.5c14.1 6 27.3 13.7 39.3 22.8l67.8-22.5c14.4-4.8 30.2 1.2 37.8 14.4l29.9 51.8c7.6 13.2 4.9 29.8-6.5 39.9L447 233.3c.9 7.4 1.3 15 1.3 22.7s-.5 15.3-1.3 22.7l53.4 47.5c11.4 10.1 14 26.8 6.5 39.9l-29.9 51.8c-7.6 13.1-23.4 19.2-37.8 14.4l-67.8-22.5c-12.1 9.1-25.3 16.7-39.3 22.8l-14.4 69.9c-3.1 14.9-16.2 25.5-31.3 25.5l-59.8 0c-15.2 0-28.3-10.7-31.3-25.5l-14.4-69.9c-14.1-6-27.2-13.7-39.3-22.8L73.5 432.3c-14.4 4.8-30.2-1.2-37.8-14.4L5.8 366.1c-7.6-13.2-4.9-29.8 6.5-39.9l53.4-47.5c-.9-7.4-1.3-15-1.3-22.7s.5-15.3 1.3-22.7L12.3 185.8c-11.4-10.1-14-26.8-6.5-39.9L35.7 94.1c7.6-13.2 23.4-19.2 37.8-14.4l67.8 22.5c12.1-9.1 25.3-16.7 39.3-22.8L195.1 9.5zM256.3 336a80 80 0 1 0 -.6-160 80 80 0 1 0 .6 160z"
+              fill="currentColor"
+            />
+          </svg>
+          Control Panel
+        </button>
+        <button
+          class="emergencyBtn "
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-triangle-exclamation iconMargin"
+            data-icon="triangle-exclamation"
+            data-prefix="fas"
+            role="img"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z"
+              fill="currentColor"
+            />
+          </svg>
+          Open All Gates
+        </button>
+      </div>
+    </header>
+    <main
+      class="main"
+    >
+      <div
+        class="statsRow"
+      >
+        <div
+          class="statCard"
+        >
+          <div
+            class="statTop"
+          >
+            <span
+              class="statIcon"
+            />
+            <span
+              class="statTrend"
+              style="color: rgb(239, 68, 68); border-color: rgba(239, 68, 68, 0.267); background-color: rgba(239, 68, 68, 0.067);"
+            >
+              1 Critical
+            </span>
+          </div>
+          <div
+            class="statValueRow"
+          >
+            <span
+              class="statValue"
+            >
+              1
+            </span>
+            <span
+              class="statSub"
+            />
+          </div>
+          <div
+            class="statLabel"
+          >
+            Open Incidents
+          </div>
+        </div>
+      </div>
+      <div
+        class="contentGrid"
+      >
+        <div
+          class="flexCol"
+        >
+          <div
+            class="sidePanel"
+          >
+            <div
+              class="panelHeader"
+            >
+              <div
+                class="panelTitle"
+              >
+                <span
+                  class="panelDot bgBlue"
+                />
+                GenAI Crowd Management Intelligence
+              </div>
+            </div>
+            <div
+              data-testid="org-stadium-map"
+            />
+          </div>
+          <section
+            class="panel"
+          >
+            <div
+              class="panelHeader"
+            >
+              <h2
+                class="panelTitle"
+              >
+                <span
+                  class="panelDot bgGreen"
+                />
+                GenAI Sustainability & Transportation Intelligence
+              </h2>
+            </div>
+            <div
+              class="gateList"
+            />
+          </section>
+          <section
+            class="panel"
+          >
+            <div
+              class="panelHeader"
+            >
+              <h2
+                class="panelTitle"
+              >
+                <span
+                  class="panelDot bgGold"
+                />
+                Volunteer Task Board
+              </h2>
+              <button
+                class="updateBtn"
+                title="AI Generate Task"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="svg-inline--fa fa-robot"
+                  data-icon="robot"
+                  data-prefix="fas"
+                  role="img"
+                  viewBox="0 0 640 512"
+                >
+                  <path
+                    d="M352 0c0-17.7-14.3-32-32-32S288-17.7 288 0l0 64-96 0c-53 0-96 43-96 96l0 224c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-224c0-53-43-96-96-96l-96 0 0-64zM160 368c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zm120 0c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zm120 0c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zM224 176a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm144 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM64 224c0-17.7-14.3-32-32-32S0 206.3 0 224l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96zm544-32c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32z"
+                    fill="currentColor"
+                  />
+                </svg>
+                 AI Auto-Assign
+              </button>
+            </div>
+            <div
+              class="gateList"
+            >
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      Gate A Entry Patrol
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      Gate A
+                       · 
+                      Security
+                       · 
+                      Team Alpha
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                      data-status="CONGESTED"
+                    >
+                      ACTIVE
+                    </span>
+                    <button
+                      class="gateBtn"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="svg-inline--fa fa-check"
+                        data-icon="check"
+                        data-prefix="fas"
+                        role="img"
+                        viewBox="0 0 448 512"
+                      >
+                        <path
+                          d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      South Stand Usher Duty
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      South Stand
+                       · 
+                      Hospitality
+                       · 
+                      Maria G.
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                      data-status="CONGESTED"
+                    >
+                      ACTIVE
+                    </span>
+                    <button
+                      class="gateBtn"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="svg-inline--fa fa-check"
+                        data-icon="check"
+                        data-prefix="fas"
+                        role="img"
+                        viewBox="0 0 448 512"
+                      >
+                        <path
+                          d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      First Aid Station Coverage
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      East Wing
+                       · 
+                      Medical
+                       · 
+                      Dr. Patel
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                      data-status="OPEN"
+                    >
+                      UPCOMING
+                    </span>
+                    <button
+                      class="gateBtn"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="svg-inline--fa fa-check"
+                        data-icon="check"
+                        data-prefix="fas"
+                        role="img"
+                        viewBox="0 0 448 512"
+                      >
+                        <path
+                          d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      Recycling Zone Monitoring
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      North Stand
+                       · 
+                      Waste
+                       · 
+                      Team Green
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                      data-status="CLOSED"
+                    >
+                      COMPLETED
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      VIP Lounge Coordination
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      VIP Lounge
+                       · 
+                      Hospitality
+                       · 
+                      James K.
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                      data-status="OPEN"
+                    >
+                      UPCOMING
+                    </span>
+                    <button
+                      class="gateBtn"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="svg-inline--fa fa-check"
+                        data-icon="check"
+                        data-prefix="fas"
+                        role="img"
+                        viewBox="0 0 448 512"
+                      >
+                        <path
+                          d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      Crowd Flow Monitor
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      Gate C
+                       · 
+                      Security
+                       · 
+                      Team Bravo
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                      data-status="CONGESTED"
+                    >
+                      ACTIVE
+                    </span>
+                    <button
+                      class="gateBtn"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="svg-inline--fa fa-check"
+                        data-icon="check"
+                        data-prefix="fas"
+                        role="img"
+                        viewBox="0 0 448 512"
+                      >
+                        <path
+                          d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div
+          class="rightCol"
+        >
+          <section
+            class="panel"
+          >
+            <div
+              class="panelHeader"
+            >
+              <h2
+                class="panelTitle"
+              >
+                <span
+                  class="panelDot bgRed"
+                />
+                GenAI Real-Time Decision Support
+              </h2>
+              <span
+                class="panelCount"
+              >
+                1
+                 active
+              </span>
+            </div>
+            <div
+              class="taskList"
+            >
+              <div
+                class="taskItem"
+              >
+                <div
+                  class="taskContent"
+                >
+                  <p
+                    class="taskTitle"
+                  />
+                  <div
+                    class="taskMeta"
+                  >
+                    <span
+                      class="taskCategory"
+                    >
+                      Gate A
+                    </span>
+                    <span
+                      class="taskDue"
+                    />
+                  </div>
+                </div>
+                <span
+                  class="priorityBadge"
+                  data-type="CRITICAL"
+                >
+                  CRITICAL
+                </span>
+              </div>
+            </div>
+          </section>
+          <section
+            class="panel"
+          >
+            <div
+              class="panelHeader"
+            >
+              <h2
+                class="panelTitle"
+              >
+                <span
+                  class="panelDot bgGold"
+                />
+                Gate Status
+              </h2>
+            </div>
+            <div
+              class="gateList"
+            >
+              <div
+                class="gateItemWrapper"
+              >
+                <div
+                  class="gateItem"
+                >
+                  <div
+                    class="gateInfo"
+                  >
+                    <p
+                      class="gateTitle"
+                    >
+                      Gate A
+                    </p>
+                    <p
+                      class="gateFlow"
+                    >
+                      Flow: 
+                    </p>
+                  </div>
+                  <div
+                    class="gateActions"
+                  >
+                    <span
+                      class="statusBadge"
+                    />
+                    <button
+                      class="gateBtn"
+                    >
+                      Manage
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <section
+        class="switchCta"
+      >
+        <div
+          class="ctaContent"
+        >
+          <p
+            class="ctaLabel"
+          >
+            LOOKING FOR FAN EXPERIENCE?
+          </p>
+          <h2
+            class="ctaTitle"
+          >
+            Switch to Fan Mode
+          </h2>
+          <p
+            class="ctaDesc"
+          >
+            Explore matches, stadium guides, live scores, and fan zone info.
+          </p>
+          <a
+            class="ctaBtn"
+            href="/fan"
+          >
+            Go to Fan Zone →
+          </a>
+        </div>
+        <div
+          class="ctaIcon"
+        >
+          ⚽
+        </div>
+      </section>
+    </main>
+    <footer
+      class="footer"
+    >
+      <p>
+        FIFA World Cup 2026™ Operations Platform — Confidential
+      </p>
+      <p
+        class="footerSub"
+      >
+        USA · Canada · Mexico · June–July 2026
+      </p>
+    </footer>
+    <button
+      aria-label="Toggle chat window"
+      class="chatButton "
+    >
+      <span
+        class="chatBtnIcon"
+      >
+        <svg
+          aria-hidden="true"
+          class="svg-inline--fa fa-comment-dots"
+          data-icon="comment-dots"
+          data-prefix="fas"
+          role="img"
+          viewBox="0 0 512 512"
+        >
+          <path
+            d="M256 480c141.4 0 256-107.5 256-240S397.4 0 256 0 0 107.5 0 240c0 54.3 19.2 104.3 51.6 144.5L2.8 476.8c-4.8 9-3.3 20 3.6 27.5s17.8 9.8 27.1 5.8l118.4-50.7C183.7 472.6 218.9 480 256 480zM128 208a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm128 0a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm96 32a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
+            fill="currentColor"
+          />
+        </svg>
+      </span>
+    </button>
+    <div
+      data-testid="org-chat-widget"
+    />
+    <div
+      class="notificationContainer"
+    />
+  </div>
+</div>
+`;

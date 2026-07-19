@@ -8,6 +8,13 @@ import { getOrganiserPrompt, getFanPrompt } from '../../lib/ai-prompts';
 
 const genAI = new GoogleGenerativeAI(process.env.GEN_AI_API);
 
+// In-memory cache for rate limits to reduce MongoDB load
+// In serverless environments this only persists per warm instance, which is an acceptable tradeoff
+const rateLimitCache = new Map();
+
+// Exported for testing purposes only
+export const clearRateLimitCache = () => rateLimitCache.clear();
+
 const chatRequestSchema = z.object({
   from: z.enum(['fan', 'organiser']).optional(),
   message: z.string().min(1, "Message cannot be empty").optional(),
@@ -22,7 +29,7 @@ const chatRequestSchema = z.object({
   accessibilityMode: z.boolean().optional(),
   volunteerMode: z.boolean().optional(),
   stream: z.boolean().optional()
-}).passthrough();
+});
 
 export async function POST(req) {
   try {
@@ -46,7 +53,7 @@ export async function POST(req) {
     // Determine identifier (userId if auth, IP if not)
     let identifier;
     if (isAuthenticated) {
-      identifier = session.user.id || session.user.email;
+      identifier = session.user.id;
     } else {
       // Hardened fallback for unauthenticated users
       const forwardedFor = req.headers.get('x-forwarded-for');
@@ -69,26 +76,39 @@ export async function POST(req) {
     
     const currentLimits = isAuthenticated ? limits.authenticated : limits.unauthenticated;
     
-    // Fetch or create rate limit record
-    let rateLimitRecord = await RateLimit.findOne({ identifier });
+    // Check cache first
+    let rateLimitRecord = rateLimitCache.get(identifier);
     const now = new Date();
     
     if (!rateLimitRecord) {
-      rateLimitRecord = new RateLimit({
+      // Create a shell record with a pending promise to prevent race conditions for simultaneous requests
+      rateLimitRecord = {
         identifier,
         submissionsCount: 0,
         notificationsCount: 0,
-        lastResetDate: now
-      });
-    } else {
-      // Check if 24 hours have passed since last reset
-      const timeSinceLastReset = now - rateLimitRecord.lastResetDate;
-      const twentyFourHours = 24 * 60 * 60 * 1000;
-      if (timeSinceLastReset > twentyFourHours) {
-        rateLimitRecord.submissionsCount = 0;
-        rateLimitRecord.notificationsCount = 0;
-        rateLimitRecord.lastResetDate = now;
+        lastResetDate: now,
+        pending: RateLimit.findOne({ identifier })
+      };
+      rateLimitCache.set(identifier, rateLimitRecord);
+    }
+    
+    if (rateLimitRecord.pending) {
+      const dbRecord = await rateLimitRecord.pending;
+      if (dbRecord) {
+        rateLimitRecord.submissionsCount = Math.max(rateLimitRecord.submissionsCount, dbRecord.submissionsCount);
+        rateLimitRecord.notificationsCount = Math.max(rateLimitRecord.notificationsCount, dbRecord.notificationsCount);
+        rateLimitRecord.lastResetDate = dbRecord.lastResetDate;
       }
+      delete rateLimitRecord.pending;
+    }
+    
+    // Check if 24 hours have passed since last reset
+    const timeSinceLastReset = now - new Date(rateLimitRecord.lastResetDate);
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    if (timeSinceLastReset > twentyFourHours) {
+      rateLimitRecord.submissionsCount = 0;
+      rateLimitRecord.notificationsCount = 0;
+      rateLimitRecord.lastResetDate = now;
     }
     
     // Check limits
@@ -110,7 +130,27 @@ export async function POST(req) {
       rateLimitRecord.notificationsCount += 1;
     }
     
-    await rateLimitRecord.save();
+    // Update cache
+    rateLimitCache.set(identifier, rateLimitRecord);
+    
+    // Prevent memory leak from map growing unbounded
+    if (rateLimitCache.size > 10000) {
+      const firstKey = rateLimitCache.keys().next().value;
+      rateLimitCache.delete(firstKey);
+    }
+    
+    // Asynchronous background save to MongoDB (write-behind, non-blocking)
+    RateLimit.updateOne(
+      { identifier },
+      { 
+        $set: {
+          submissionsCount: rateLimitRecord.submissionsCount,
+          notificationsCount: rateLimitRecord.notificationsCount,
+          lastResetDate: rateLimitRecord.lastResetDate
+        }
+      },
+      { upsert: true }
+    ).catch(err => console.error("Background RateLimit updateOne failed:", err));
 
     const isOrganiser = from === 'organiser';
     const finalTicket = ticket || tickets;

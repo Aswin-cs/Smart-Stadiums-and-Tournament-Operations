@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useRef } from 'react';
+import { useDragScroll } from '../hooks/useDragScroll';
 import styles from '../fan/fan.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -19,72 +20,18 @@ export default function FanChatWidget({ chatHook }) {
     volunteerMode, setVolunteerMode
   } = chatHook;
 
-  const chipsRef = useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(false);
-
-  const updateScrollArrows = () => {
-    const el = chipsRef.current;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    setShowLeftArrow(scrollLeft > 2);
-    setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 2);
-  };
-
-  useEffect(() => {
-    if (isChatOpen) {
-      const timer = setTimeout(() => {
-        updateScrollArrows();
-      }, 150);
-      window.addEventListener('resize', updateScrollArrows);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('resize', updateScrollArrows);
-      };
-    }
-  }, [isChatOpen]);
-
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeftRef = useRef(0);
-  const isDragging = useRef(false);
-
-  const handleMouseDown = (e) => {
-    const el = chipsRef.current;
-    isDown.current = true;
-    isDragging.current = false;
-    el.classList.add(styles.dragActive);
-    startX.current = e.pageX - el.offsetLeft;
-    scrollLeftRef.current = el.scrollLeft;
-  };
-
-  const handleMouseLeave = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    el.classList.remove(styles.dragActive);
-  };
-
-  const handleMouseUp = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    el.classList.remove(styles.dragActive);
-    setTimeout(() => {
-      isDragging.current = false;
-    }, 50);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current) return;
-    e.preventDefault();
-    const el = chipsRef.current;
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    if (Math.abs(x - startX.current) > 5) {
-      isDragging.current = true;
-    }
-    el.scrollLeft = scrollLeftRef.current - walk;
-  };
+  const {
+    containerRef: chipsRef,
+    showLeftArrow,
+    showRightArrow,
+    updateScrollArrows,
+    handleMouseDown,
+    handleMouseLeave,
+    handleMouseUp,
+    handleMouseMove,
+    scrollBy,
+    isDragging
+  } = useDragScroll({ deps: [isChatOpen], dragActiveClass: styles.dragActive });
 
   const handleChipClick = (e, text) => {
     if (isDragging.current) {
@@ -100,43 +47,43 @@ export default function FanChatWidget({ chatHook }) {
   return (
     <div className={styles.chatWindow} id="chat-window">
       {/* Header */}
-      <div className={styles.chatHeader}>
-        <div className={styles.chatHeaderInfo}>
-          <div className={styles.chatAvatar}>
-            <FontAwesomeIcon icon={faRobot} />
-            <span className={styles.avatarOnline} />
+        <div className={styles.chatHeader}>
+          <div className={styles.chatHeaderInfo}>
+            <div className={styles.chatAvatar}>
+              <FontAwesomeIcon icon={faRobot} />
+              <span className={styles.avatarOnline} />
+            </div>
+            <div className={styles.chatHeaderTexts}>
+              <h4 className={styles.chatTitle}>GenAI Assistant</h4>
+              <p className={styles.chatSubtitle}>Multilingual • Online</p>
+            </div>
           </div>
-          <div>
-            <h4 className={styles.chatTitle}>Stadium Assistant</h4>
-            <p className={styles.chatSubtitle}>AI Support • Online</p>
+          <div className={styles.chatControls}>
+            <label className={`${styles.chatToggleLabel} ${accessibilityMode ? styles.activeAccess : ''}`}>
+              <input 
+                type="checkbox" 
+                checked={accessibilityMode} 
+                onChange={(e) => setAccessibilityMode(e.target.checked)} 
+                aria-label="Toggle Accessibility Mode"
+                className={styles.hiddenCheckbox}
+              />
+              Access Mode
+            </label>
+            <label className={`${styles.chatToggleLabel} ${volunteerMode ? styles.activeVolunteer : ''}`}>
+              <input 
+                type="checkbox" 
+                checked={volunteerMode} 
+                onChange={(e) => setVolunteerMode(e.target.checked)} 
+                aria-label="Toggle Volunteer Mode"
+                className={styles.hiddenCheckbox}
+              />
+              Volunteer
+            </label>
+            <button className={styles.chatCloseBtn} onClick={() => setIsChatOpen(false)} aria-label="Close Chat">
+              <FontAwesomeIcon icon={faXmark} />
+            </button>
           </div>
         </div>
-        <div className={styles.chatControls}>
-          <label className={styles.chatToggleLabel}>
-            <input 
-              type="checkbox" 
-              checked={accessibilityMode} 
-              onChange={(e) => setAccessibilityMode(e.target.checked)} 
-              aria-label="Toggle Accessibility Mode"
-              className={styles.accessCheckbox}
-            />
-            Access Mode
-          </label>
-          <label className={styles.chatToggleLabel}>
-            <input 
-              type="checkbox" 
-              checked={volunteerMode} 
-              onChange={(e) => setVolunteerMode(e.target.checked)} 
-              aria-label="Toggle Volunteer Mode"
-              className={styles.volunteerCheckbox}
-            />
-            Volunteer
-          </label>
-          <button className={styles.chatCloseBtn} onClick={() => setIsChatOpen(false)} aria-label="Close chat">
-            <FontAwesomeIcon icon={faXmark} />
-          </button>
-        </div>
-      </div>
 
       {/* Messages */}
       <div className={styles.chatMessagesContainer}>
@@ -147,7 +94,7 @@ export default function FanChatWidget({ chatHook }) {
                 <FontAwesomeIcon icon={faRobot} />
               </div>
             )}
-            <div className={styles.msgBubble}>
+            <div className={`${styles.msgBubble} ${/[\u0600-\u06FF]/.test(msg.text) ? styles.rtlText : ''}`}>
               <p className={styles.msgText}>{msg.text}</p>
               <span className={styles.msgTime}>{msg.time}</span>
             </div>
@@ -173,10 +120,7 @@ export default function FanChatWidget({ chatHook }) {
         {showLeftArrow && (
           <button
             className={`${styles.chatScrollBtn} ${styles.chatScrollBtnLeft}`}
-            onClick={() => {
-              const el = chipsRef.current;
-              el.scrollBy({ left: -120, behavior: 'smooth' });
-            }}
+            onClick={() => scrollBy(-120)}
             type="button"
             aria-label="Scroll left"
           >
@@ -199,14 +143,14 @@ export default function FanChatWidget({ chatHook }) {
           <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Where is First Aid?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faKitMedical} /></span> First Aid</button>
           <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Show the route from seat to gate and transportation details only.")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faTrainSubway} /></span> AI Exit Strategy</button>
           <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Where are the nearest recycling and eco-friendly waste stations? What sustainability initiatives are active at this World Cup venue?")}><span className={styles.chipIcon}><FontAwesomeIcon icon={faLeaf} /></span> Sustainability</button>
+          <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "¿Dónde está la comida?")}><span className={styles.chipIcon}>🇪🇸</span> ¿Dónde está la comida?</button>
+          <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "Où sont les toilettes ?")}><span className={styles.chipIcon}>🇫🇷</span> Où sont les toilettes ?</button>
+          <button className={styles.chipBtn} onClick={(e) => handleChipClick(e, "أين المخرج؟")}><span className={styles.chipIcon}>🇸🇦</span> أين المخرج؟</button>
         </div>
         {showRightArrow && (
           <button
             className={`${styles.chatScrollBtn} ${styles.chatScrollBtnRight}`}
-            onClick={() => {
-              const el = chipsRef.current;
-              el.scrollBy({ left: 120, behavior: 'smooth' });
-            }}
+            onClick={() => scrollBy(120)}
             type="button"
             aria-label="Scroll right"
           >

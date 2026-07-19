@@ -11,6 +11,7 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
     '^bson$': require.resolve('bson'),
   },
+  testPathIgnorePatterns: ['<rootDir>/tests/e2e/'],
   collectCoverage: true,
   collectCoverageFrom: [
     'app/**/*.{js,jsx}',

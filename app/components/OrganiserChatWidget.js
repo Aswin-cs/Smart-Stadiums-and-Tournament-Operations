@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useRef } from 'react';
+import { useDragScroll } from '../hooks/useDragScroll';
 import styles from '../organiser/organiser.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -16,72 +17,18 @@ export default function OrganiserChatWidget({ chatHook }) {
     messagesEndRef, handleSendMessage
   } = chatHook;
 
-  const chipsRef = useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(false);
-
-  const updateScrollArrows = () => {
-    const el = chipsRef.current;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    setShowLeftArrow(scrollLeft > 2);
-    setShowRightArrow(scrollLeft + clientWidth < scrollWidth - 2);
-  };
-
-  useEffect(() => {
-    if (isChatOpen) {
-      const timer = setTimeout(() => {
-        updateScrollArrows();
-      }, 150);
-      window.addEventListener('resize', updateScrollArrows);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('resize', updateScrollArrows);
-      };
-    }
-  }, [isChatOpen]);
-
-  const isDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeftRef = useRef(0);
-  const isDragging = useRef(false);
-
-  const handleMouseDown = (e) => {
-    const el = chipsRef.current;
-    isDown.current = true;
-    isDragging.current = false;
-    el.classList.add(styles.dragActive);
-    startX.current = e.pageX - el.offsetLeft;
-    scrollLeftRef.current = el.scrollLeft;
-  };
-
-  const handleMouseLeave = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    el.classList.remove(styles.dragActive);
-  };
-
-  const handleMouseUp = () => {
-    if (!isDown.current) return;
-    isDown.current = false;
-    const el = chipsRef.current;
-    el.classList.remove(styles.dragActive);
-    setTimeout(() => {
-      isDragging.current = false;
-    }, 50);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown.current) return;
-    e.preventDefault();
-    const el = chipsRef.current;
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - startX.current) * 1.5;
-    if (Math.abs(x - startX.current) > 5) {
-      isDragging.current = true;
-    }
-    el.scrollLeft = scrollLeftRef.current - walk;
-  };
+  const {
+    containerRef: chipsRef,
+    showLeftArrow,
+    showRightArrow,
+    updateScrollArrows,
+    handleMouseDown,
+    handleMouseLeave,
+    handleMouseUp,
+    handleMouseMove,
+    scrollBy,
+    isDragging
+  } = useDragScroll({ deps: [isChatOpen], dragActiveClass: styles.dragActive });
 
   const handleChipClick = (e, text) => {
     if (isDragging.current) {
@@ -104,7 +51,7 @@ export default function OrganiserChatWidget({ chatHook }) {
             <span className={styles.avatarOnline} />
           </div>
           <div>
-            <h4 className={styles.chatTitle}>Operations Assistant</h4>
+            <h4 className={styles.chatTitle}>GenAI Operations Assistant</h4>
             <p className={styles.chatSubtitle}>AI Support • Online</p>
           </div>
         </div>
@@ -148,10 +95,7 @@ export default function OrganiserChatWidget({ chatHook }) {
         {showLeftArrow && (
           <button
             className={`${styles.chatScrollBtn} ${styles.chatScrollBtnLeft}`}
-            onClick={() => {
-              const el = chipsRef.current;
-              el.scrollBy({ left: -120, behavior: 'smooth' });
-            }}
+            onClick={() => scrollBy(-120)}
             type="button"
             aria-label="Scroll left"
           >
@@ -176,10 +120,7 @@ export default function OrganiserChatWidget({ chatHook }) {
         {showRightArrow && (
           <button
             className={`${styles.chatScrollBtn} ${styles.chatScrollBtnRight}`}
-            onClick={() => {
-              const el = chipsRef.current;
-              el.scrollBy({ left: 120, behavior: 'smooth' });
-            }}
+            onClick={() => scrollBy(120)}
             type="button"
             aria-label="Scroll right"
           >

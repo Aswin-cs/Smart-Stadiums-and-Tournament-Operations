@@ -1,0 +1,324 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`FanTicketManager renders correctly with default props and matches snapshot 1`] = `
+<div>
+  <section
+    class="section"
+    id="my-ticket-section"
+  >
+    <div
+      class="sectionHeader"
+    >
+      <div
+        class="sectionLabel"
+      >
+        <span
+          class="sectionDot"
+          style="background: rgb(249, 212, 80);"
+        />
+        MY TICKET
+      </div>
+      <div
+        class="ticketActions"
+      >
+        <button
+          class="resetBtn"
+          id="btn-reset-ticket"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-rotate-left iconMargin"
+            data-icon="rotate-left"
+            data-prefix="fas"
+            role="img"
+            viewBox="0 0 512 512"
+          >
+            <path
+              d="M24 192l144 0c9.7 0 18.5-5.8 22.2-14.8s1.7-19.3-5.2-26.2l-46.7-46.7c75.3-58.6 184.3-53.3 253.5 15.9 75 75 75 196.5 0 271.5s-196.5 75-271.5 0c-10.2-10.2-19-21.3-26.4-33-9.5-14.9-29.3-19.3-44.2-9.8s-19.3 29.3-9.8 44.2C49.7 408.7 61.4 423.5 75 437 175 537 337 537 437 437S537 175 437 75C342.8-19.3 193.3-24.7 92.7 58.8L41 7C34.1 .2 23.8-1.9 14.8 1.8S0 14.3 0 24L0 168c0 13.3 10.7 24 24 24z"
+              fill="currentColor"
+            />
+          </svg>
+           Reset
+        </button>
+        <button
+          class="saveBtn "
+          id="btn-save-ticket"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-floppy-disk iconMargin"
+            data-icon="floppy-disk"
+            data-prefix="fas"
+            role="img"
+            viewBox="0 0 448 512"
+          >
+            <path
+              d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-242.7c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32L64 32zm32 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 64c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-64zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+              fill="currentColor"
+            />
+          </svg>
+           Save Ticket
+        </button>
+      </div>
+    </div>
+    <div
+      class="ticketLayout"
+    >
+      <div
+        class="ticketPreviewWrap"
+      >
+        <div
+          data-testid="ticket-preview"
+        >
+          {"holderName":"Fan","match":"USA 🇺🇸 vs 🇲🇽 MEX","matchDate":"Jun 11, 2026 — 18:00","stadium":"MetLife Stadium","gate":"Gate A","section":"North Stand","row":"12","seat":"34","category":"Standard","barcode":"FIFA2026-MTL-00001"}
+        </div>
+        <p
+          class="ticketHint"
+        >
+          ✦ Edit fields on the right to customise your ticket
+        </p>
+      </div>
+      <div
+        class="ticketEditor"
+      >
+        <div
+          class="editorTabs"
+        >
+          <button
+            class="editorTab editorTabActive"
+            id="tab-seat"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-chair iconMargin"
+              data-icon="chair"
+              data-prefix="fas"
+              role="img"
+              viewBox="0 0 448 512"
+            >
+              <path
+                d="M152 256l0-181.8c-24.5 20.5-40 51.4-40 85.8l0 96 40 0zm48 0l48 0 0-205.4c-7.7-1.7-15.8-2.6-24-2.6s-16.3 .9-24 2.6L200 256zM296 74.2l0 181.8 40 0 0-96c0-34.4-15.5-65.2-40-85.8zM32 256l32 0 0-96C64 71.6 135.6 0 224 0S384 71.6 384 160l0 96 32 0c17.7 0 32 14.3 32 32l0 64c0 17.7-14.3 32-32 32l0 96c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-96-256 0 0 96c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-96c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32z"
+                fill="currentColor"
+              />
+            </svg>
+            Seat Info
+          </button>
+          <button
+            class="editorTab "
+            id="tab-match"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-calendar-days iconMargin"
+              data-icon="calendar-days"
+              data-prefix="fas"
+              role="img"
+              viewBox="0 0 448 512"
+            >
+              <path
+                d="M128 0c17.7 0 32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-32c0-17.7 14.3-32 32-32zM64 240l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm128 0l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zM64 368l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zm112 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16z"
+                fill="currentColor"
+              />
+            </svg>
+            Match
+          </button>
+          <button
+            class="editorTab "
+            id="tab-holder"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-user iconMargin"
+              data-icon="user"
+              data-prefix="fas"
+              role="img"
+              viewBox="0 0 448 512"
+            >
+              <path
+                d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"
+                fill="currentColor"
+              />
+            </svg>
+            Holder
+          </button>
+        </div>
+        <div
+          class="editorFields"
+        >
+          <div
+            class="fieldGroup"
+          >
+            <label
+              class="fieldLabel"
+            >
+              Category
+            </label>
+            <div
+              class="categoryPicker"
+            >
+              <button
+                class="catBtn catBtnActive"
+                id="cat-standard"
+              >
+                Standard
+              </button>
+              <button
+                class="catBtn "
+                id="cat-premium"
+              >
+                Premium
+              </button>
+              <button
+                class="catBtn "
+                id="cat-vip"
+              >
+                VIP
+              </button>
+              <button
+                class="catBtn "
+                id="cat-hospitality"
+              >
+                Hospitality
+              </button>
+            </div>
+          </div>
+          <div
+            class="fieldRow"
+          >
+            <div
+              class="fieldGroup"
+            >
+              <label
+                class="fieldLabel"
+                for="field-gate"
+              >
+                Gate
+              </label>
+              <select
+                class="fieldSelect"
+                id="field-gate"
+              >
+                <option
+                  value="Gate A"
+                >
+                  Gate A
+                </option>
+                <option
+                  value="Gate B"
+                >
+                  Gate B
+                </option>
+                <option
+                  value="Gate C"
+                >
+                  Gate C
+                </option>
+                <option
+                  value="Gate D"
+                >
+                  Gate D
+                </option>
+                <option
+                  value="Gate E"
+                >
+                  Gate E
+                </option>
+                <option
+                  value="Gate F"
+                >
+                  Gate F
+                </option>
+              </select>
+            </div>
+            <div
+              class="fieldGroup"
+            >
+              <label
+                class="fieldLabel"
+                for="field-section"
+              >
+                Section
+              </label>
+              <select
+                class="fieldSelect"
+                id="field-section"
+              >
+                <option
+                  value="North Stand"
+                >
+                  North Stand
+                </option>
+                <option
+                  value="South Stand"
+                >
+                  South Stand
+                </option>
+                <option
+                  value="East Wing"
+                >
+                  East Wing
+                </option>
+                <option
+                  value="West Wing"
+                >
+                  West Wing
+                </option>
+                <option
+                  value="Central Block"
+                >
+                  Central Block
+                </option>
+                <option
+                  value="VIP Lounge"
+                >
+                  VIP Lounge
+                </option>
+              </select>
+            </div>
+          </div>
+          <div
+            class="fieldRow"
+          >
+            <div
+              class="fieldGroup"
+            >
+              <label
+                class="fieldLabel"
+                for="field-row"
+              >
+                Row
+              </label>
+              <input
+                class="fieldInput"
+                id="field-row"
+                maxlength="4"
+                placeholder="e.g. 12"
+                type="text"
+                value="12"
+              />
+            </div>
+            <div
+              class="fieldGroup"
+            >
+              <label
+                class="fieldLabel"
+                for="field-seat"
+              >
+                Seat
+              </label>
+              <input
+                class="fieldInput"
+                id="field-seat"
+                maxlength="4"
+                placeholder="e.g. 34"
+                type="text"
+                value="34"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;

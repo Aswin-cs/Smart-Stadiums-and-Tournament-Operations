@@ -42,3 +42,12 @@ export const initialBins = [
   { id: 'Bin 3', location: 'East Wing', fillLevel: 20 },
   { id: 'Bin 4', location: 'West Wing', fillLevel: 85 },
 ];
+
+export const initialVolunteerTasks = [
+  { id: 'VT-001', task: 'Gate A Entry Patrol', zone: 'Gate A', category: 'Security', shift: '14:00 – 18:00', status: 'ACTIVE', assignee: 'Team Alpha' },
+  { id: 'VT-002', task: 'South Stand Usher Duty', zone: 'South Stand', category: 'Hospitality', shift: '16:00 – 20:00', status: 'ACTIVE', assignee: 'Maria G.' },
+  { id: 'VT-003', task: 'First Aid Station Coverage', zone: 'East Wing', category: 'Medical', shift: '15:00 – 19:00', status: 'UPCOMING', assignee: 'Dr. Patel' },
+  { id: 'VT-004', task: 'Recycling Zone Monitoring', zone: 'North Stand', category: 'Waste', shift: '14:00 – 18:00', status: 'COMPLETED', assignee: 'Team Green' },
+  { id: 'VT-005', task: 'VIP Lounge Coordination', zone: 'VIP Lounge', category: 'Hospitality', shift: '17:00 – 21:00', status: 'UPCOMING', assignee: 'James K.' },
+  { id: 'VT-006', task: 'Crowd Flow Monitor', zone: 'Gate C', category: 'Security', shift: '15:00 – 19:00', status: 'ACTIVE', assignee: 'Team Bravo' },
+];

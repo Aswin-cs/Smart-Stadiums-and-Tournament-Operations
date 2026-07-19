@@ -42,7 +42,7 @@ describe('FanChatWidget', () => {
     mockChatHook.isChatOpen = true;
     render(<FanChatWidget chatHook={mockChatHook} ticket={null} matches={[]} gates={[]} incidents={[]} stats={{}} transportation={[]} setRouteMode={jest.fn()} setSelectedAmenityId={jest.fn()} setAmenityFilter={jest.fn()} />);
     
-    expect(screen.getByText('Stadium Assistant')).toBeInTheDocument();
+    expect(screen.getByText('GenAI Assistant')).toBeInTheDocument();
     expect(screen.getByText('Hello')).toBeInTheDocument();
   });
 

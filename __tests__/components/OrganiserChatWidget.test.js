@@ -36,9 +36,9 @@ describe('OrganiserChatWidget', () => {
 
   it('renders chat window when isChatOpen is true', () => {
     mockChatHook.isChatOpen = true;
-    render(<OrganiserChatWidget chatHook={mockChatHook} gates={[]} incidents={[]} stats={[]} climate="CLEAR" />);
+    render(<OrganiserChatWidget chatHook={mockChatHook} />);
     
-    expect(screen.getByText('Operations Assistant')).toBeInTheDocument();
+    expect(screen.getByText('GenAI Operations Assistant')).toBeInTheDocument();
     expect(screen.getByText('Hello')).toBeInTheDocument();
   });
 

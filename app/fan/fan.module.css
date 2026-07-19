@@ -3,114 +3,42 @@
    ============================================= */
 
 .wrapper {
-  min-height: 100vh;
+  composes: wrapper from "../styles/shared.module.css";
   background: linear-gradient(160deg, #060a14 0%, #0a0e1a 35%, #0d1b3e 70%, #0a1a0d 100%);
-  position: relative;
-  overflow-x: hidden;
 }
 
 /* ---- Background ---- */
-.bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
+.bg { composes: bg from "../styles/shared.module.css"; }
 
 .bgGlow1 {
-  position: absolute;
-  top: -10%;
+  composes: bgGlow1 from "../styles/shared.module.css";
   left: -20%;
   width: 70vw;
   height: 70vw;
-  border-radius: 50%;
   background: radial-gradient(circle, rgba(26,71,42,0.2) 0%, transparent 65%);
 }
 
 .bgGlow2 {
-  position: absolute;
-  bottom: 10%;
+  composes: bgGlow2 from "../styles/shared.module.css";
   right: -15%;
   width: 55vw;
   height: 55vw;
-  border-radius: 50%;
   background: radial-gradient(circle, rgba(67,97,238,0.1) 0%, transparent 65%);
 }
 
-.grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
+.grid { composes: grid from "../styles/shared.module.css"; }
 
 /* ---- Nav ---- */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 32px;
-  background: rgba(6,10,20,0.7);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.navBack {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--fifa-silver);
-  transition: color 0.2s, gap 0.2s;
-  letter-spacing: 0.05em;
-}
-
-.navBack:hover {
-  color: var(--fifa-white);
-  gap: 12px;
-}
-
-.navBack svg {
-  width: 18px;
-  height: 18px;
-  transition: transform 0.2s;
-}
-
-.navBack:hover svg {
-  transform: translateX(-3px);
-}
-
-.navBrand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  letter-spacing: 0.08em;
-  color: var(--fifa-white);
-}
-
-.navLogo {
-  font-size: 1.3rem;
-  animation: rotate-slow 8s linear infinite;
-  display: inline-block;
-}
+.nav { composes: nav from "../styles/shared.module.css"; }
+.navBack { composes: navBack from "../styles/shared.module.css"; }
+.navBrand { composes: navBrand from "../styles/shared.module.css"; }
+.navLogo { composes: navLogo from "../styles/shared.module.css"; }
 
 .navBadge {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
+  composes: navBadge from "../styles/shared.module.css";
   color: var(--fifa-pitch-light);
   background: rgba(26,71,42,0.25);
   border: 1px solid rgba(26,71,42,0.6);
-  border-radius: 100px;
-  padding: 5px 14px;
 }
 
 /* ---- Hero Banner ---- */
@@ -588,90 +516,36 @@
 
 /* ---- Switch CTA ---- */
 .switchCta {
+  composes: switchCta from "../styles/shared.module.css";
   background: linear-gradient(135deg, rgba(67,97,238,0.1), rgba(67,97,238,0.04));
   border: 1px solid rgba(67,97,238,0.2);
-  border-radius: 20px;
-  padding: 40px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
 }
 
-.ctaContent {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.ctaContent { composes: ctaContent from "../styles/shared.module.css"; }
+.ctaTitle { composes: ctaTitle from "../styles/shared.module.css"; }
+.ctaDesc { composes: ctaDesc from "../styles/shared.module.css"; }
 
 .ctaLabel {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.3em;
+  composes: ctaLabel from "../styles/shared.module.css";
   color: var(--fifa-accent-light);
 }
 
-.ctaTitle {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  color: var(--fifa-white);
-  letter-spacing: 0.03em;
-}
-
-.ctaDesc {
-  font-size: 0.85rem;
-  color: var(--fifa-silver);
-}
-
 .ctaBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 12px 24px;
+  composes: ctaBtn from "../styles/shared.module.css";
   background: linear-gradient(135deg, var(--fifa-accent), #5a7ff8);
-  border-radius: 100px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: white;
-  letter-spacing: 0.05em;
-  transition: transform 0.2s, box-shadow 0.2s;
-  width: fit-content;
 }
-
 .ctaBtn:hover {
-  transform: translateX(4px);
   box-shadow: 0 8px 24px rgba(67,97,238,0.4);
 }
 
-.ctaIcon {
-  font-size: 4rem;
-  opacity: 0.3;
-  flex-shrink: 0;
-}
+.ctaIcon { composes: ctaIcon from "../styles/shared.module.css"; }
 
 /* ---- Footer ---- */
-.footer {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 30px 24px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.footer p {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.35);
-  letter-spacing: 0.05em;
-}
+.footer { composes: footer from "../styles/shared.module.css"; }
 
 .footerSub {
-  font-size: 0.65rem !important;
+  composes: footerSub from "../styles/shared.module.css";
   color: rgba(201,162,39,0.4) !important;
-  letter-spacing: 0.15em !important;
 }
 
 /* ---- Responsive ---- */
@@ -1818,38 +1692,69 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
 }
 
 .chatHeaderInfo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chatHeaderTexts {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .chatControls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .chatToggleLabel {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 100px;
+  transition: all 0.2s ease;
+  user-select: none;
+  white-space: nowrap;
 }
 
-.accessCheckbox {
-  accent-color: #3b82f6;
+.chatToggleLabel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.volunteerCheckbox {
-  accent-color: #10b981;
+.hiddenCheckbox {
+  display: none;
+}
+
+.activeAccess {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+}
+
+.activeVolunteer {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
 }
 
 .chatAvatar {
@@ -1877,16 +1782,22 @@
 }
 
 .chatTitle {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: white;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chatSubtitle {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.5);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chatCloseBtn {
@@ -2506,4 +2417,80 @@
   .navActions > .navControlGroup:last-child:hover .navHoverLabel {
     transform: translateY(0);
   }
+}
+
+/* =============================================
+   ACCESSIBILITY & RTL SUPPORT
+   ============================================= */
+
+.highContrast {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+.highContrast * {
+  border-color: #ffffff !important;
+}
+
+.highContrast h1, .highContrast h2, .highContrast h3, .highContrast h4, .highContrast h5, .highContrast h6, .highContrast p, .highContrast span, .highContrast div {
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.highContrast .chatMessageUser .msgBubble {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.highContrast .chatMessageBot .msgBubble {
+  background: #000000 !important;
+  border: 2px solid #ffff00 !important; /* Yellow border for bot in high contrast */
+  color: #ffff00 !important;
+}
+
+.highContrast .chatMessageBot .msgBubble p {
+  color: #ffff00 !important;
+}
+
+.rtlText {
+  direction: rtl;
+  text-align: right;
+  font-family: Arial, Helvetica, sans-serif; /* Fallback for Arabic */
+}
+
+/* ---- Icon Button ---- */
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--fifa-silver);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--fifa-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.iconBtnActive {
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(201, 162, 39, 0.05));
+  border-color: rgba(201, 162, 39, 0.5);
+  color: var(--fifa-gold);
+}
+
+.iconBtnActive:hover {
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.3), rgba(201, 162, 39, 0.1));
+  border-color: var(--fifa-gold);
+  color: var(--fifa-gold-bright);
 }

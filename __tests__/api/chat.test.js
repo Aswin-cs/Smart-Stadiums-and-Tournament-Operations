@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { POST } from '@/app/api/chat/route';
+import { POST, clearRateLimitCache } from '@/app/api/chat/route';
 
 // Mock the Google Generative AI SDK to prevent live network calls during testing
 jest.mock('@google/generative-ai', () => {
@@ -51,6 +51,7 @@ jest.mock('@/models/RateLimit', () => {
     save: mockSave,
   }));
   RateLimitMock.findOne = jest.fn();
+  RateLimitMock.updateOne = jest.fn().mockResolvedValue(true);
   return {
     __esModule: true,
     default: RateLimitMock,
@@ -61,6 +62,7 @@ import RateLimit from '@/models/RateLimit';
 describe('/api/chat API Route', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    clearRateLimitCache();
   });
 
   it('should return a mocked AI response for unauthenticated users', async () => {
@@ -140,6 +142,7 @@ describe('/api/chat API Route', () => {
 
     expect(response.status).toBe(200);
     expect(json.reply).toBe('Mocked AI response for seat search');
+    expect(RateLimit.updateOne).toHaveBeenCalled();
   });
 
   it('should reset rate limit if 24 hours have passed', async () => {
@@ -168,6 +171,7 @@ describe('/api/chat API Route', () => {
     const json = await response.json();
 
     expect(response.status).toBe(200);
+    expect(RateLimit.updateOne).toHaveBeenCalled();
   });
 
   it('should return 429 if rate limit is exceeded', async () => {

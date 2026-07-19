@@ -112,7 +112,7 @@ export function CrowdProvider({ children }) {
 
         return { ...t, availableSeats: newSeats, crowding, status };
       }));
-    }, 4000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [isAutoSimulating]);
@@ -144,7 +144,7 @@ export function CrowdProvider({ children }) {
             : g
         );
       });
-    }, 150000); // 2.5 minutes (150,000 ms)
+    }, 300000); // 5 minutes (300,000 ms)
 
     return () => clearInterval(bgInterval);
   }, []);

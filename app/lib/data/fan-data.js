@@ -1,7 +1,8 @@
 import {
   faHamburger, faBeer, faHotdog, faPizzaSlice, faCookie, faMugHot,
   faRestroom, faBriefcaseMedical, faDoorOpen,
-  faCalendarAlt, faLocationDot, faMobileScreen, faRobot
+  faCalendarAlt, faLocationDot, faMobileScreen, faRobot,
+  faWheelchair, faBrain
 } from '@fortawesome/free-solid-svg-icons';
 
 export const matches = [
@@ -23,6 +24,10 @@ export const amenitiesData = [
   { id: 'Restroom South', icon: faRestroom, x: 640, y: 450, type: 'facility' },
   { id: 'First Aid', icon: faBriefcaseMedical, x: 640, y: 70, type: 'emergency' },
   { id: 'Emergency Exit', icon: faDoorOpen, x: 260, y: 450, type: 'emergency' },
+  { id: 'Wheelchair Ramp A', icon: faWheelchair, x: 170, y: 150, type: 'accessibility' },
+  { id: 'Wheelchair Ramp B', icon: faWheelchair, x: 730, y: 370, type: 'accessibility' },
+  { id: 'Sensory Room North', icon: faBrain, x: 350, y: 80, type: 'accessibility' },
+  { id: 'Sensory Room South', icon: faBrain, x: 550, y: 440, type: 'accessibility' },
 ];
 
 export const sectionsData = {

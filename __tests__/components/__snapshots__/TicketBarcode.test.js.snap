@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`TicketBarcode renders correctly and matches snapshot 1`] = `
+<div>
+  <div
+    class="stubBarcode"
+  >
+    <div
+      class="barcodeBar"
+      style="height: 23.5px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 17.8px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 16.3px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 13.8px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 14.5px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 19.4px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 11px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 20.9px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 11.3px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 17.3px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 22.7px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 21.7px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 16.8px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 20.3px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 19.1px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 12.8px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 15.1px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 13.6px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 18px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 16.9px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 21.8px;"
+    />
+    <div
+      class="barcodeBar"
+      style="height: 25.1px;"
+    />
+  </div>
+</div>
+`;

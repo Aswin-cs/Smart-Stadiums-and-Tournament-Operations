@@ -5,17 +5,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from '../fan/fan.module.css';
 import { amenitiesData, sectionsData } from '../lib/data/fan-data';
 import { useCrowd } from '../contexts/CrowdContext';
+import { useStadiumRoute } from '../contexts/StadiumRouteContext';
 
-export default function StadiumMockup({
-  ticket,
-  onSelectGate,
-  routeMode,
-  setRouteMode,
-  selectedAmenityId,
-  setSelectedAmenityId,
-  amenityFilter,
-  setAmenityFilter
-}) {
+export default function StadiumMockup() {
+  const {
+    ticket,
+    update,
+    routeMode,
+    setRouteMode,
+    selectedAmenityId,
+    setSelectedAmenityId,
+    amenityFilter,
+    setAmenityFilter,
+    accessibilityMode
+  } = useStadiumRoute();
+  
   const [isNight, setIsNight] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const { gates: realGates } = useCrowd();
@@ -121,6 +125,7 @@ export default function StadiumMockup({
             <option value="food">🍔{isMobile ? '' : ' Food & Drink'}</option>
             <option value="facility">🚻{isMobile ? '' : ' Facilities'}</option>
             <option value="emergency">⚕️{isMobile ? '' : ' Emergency'}</option>
+            <option value="accessibility">♿{isMobile ? '' : ' Accessibility'}</option>
           </select>
           {isMobile && <div className={styles.stadiumControlLabel}>Settings</div>}
         </div>
@@ -361,7 +366,7 @@ export default function StadiumMockup({
             return (
               <g
                 key={gate.id}
-                onClick={() => onSelectGate && onSelectGate(gate.id)}
+                onClick={() => update('gate', gate.id)}
                 style={{ cursor: 'pointer' }}
                 tabIndex={0}
                 role="button"
@@ -369,7 +374,7 @@ export default function StadiumMockup({
                 className={styles.gateGroup}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
-                    onSelectGate && onSelectGate(gate.id);
+                    update('gate', gate.id);
                   }
                 }}
               >
@@ -486,6 +491,7 @@ export default function StadiumMockup({
               stroke={isNight ? "#10b981" : "#059669"}
               strokeWidth="3"
               strokeLinecap="round"
+              strokeDasharray={accessibilityMode || (activeAmenity && activeAmenity.type === 'accessibility') ? "8, 6" : "none"}
               className={styles.routeLine}
             />
             {/* Target Seat Marker Pin */}
