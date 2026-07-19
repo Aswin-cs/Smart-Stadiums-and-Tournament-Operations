@@ -15,15 +15,11 @@ export async function middleware(request) {
     }
   }
 
-  // 2. CSP Nonce Generation
-  // Generate a random nonce
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
-  
-  // Build CSP header. In dev we might need unsafe-eval for React Fast Refresh.
+  // 2. CSP Generation
   const isDev = process.env.NODE_ENV !== 'production';
   const scriptSrc = isDev 
-    ? `'self' 'unsafe-eval' 'nonce-${nonce}' 'strict-dynamic'`
-    : `'self' 'nonce-${nonce}' 'strict-dynamic'`;
+    ? `'self' 'unsafe-eval' 'unsafe-inline'`
+    : `'self' 'unsafe-inline'`;
 
   const cspHeader = `
     default-src 'self';
@@ -34,9 +30,8 @@ export async function middleware(request) {
     connect-src 'self' https://generativelanguage.googleapis.com;
   `.replace(/\s{2,}/g, ' ').trim();
 
-  // Clone headers to inject nonce
+  // Clone headers to inject CSP
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-nonce', nonce);
   requestHeaders.set('Content-Security-Policy', cspHeader);
 
   // 3. CSRF Protection (Double Submit Cookie)
