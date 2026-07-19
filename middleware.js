@@ -1,21 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { withAuth } from 'next-auth/middleware';
 
-export async function middleware(request) {
+function customMiddleware(request) {
   const url = request.nextUrl;
   
-  // 1. Organiser Route Auth Protection
-  if (url.pathname.startsWith('/organiser')) {
-    // We use getToken from next-auth which works well in Edge middleware
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-    if (!token) {
-      const signInUrl = new URL('/login', request.url);
-      signInUrl.searchParams.set('callbackUrl', url.pathname);
-      return NextResponse.redirect(signInUrl);
-    }
-  }
-
-  // 2. CSP Generation
+  // 1. CSP Generation
   const isDev = process.env.NODE_ENV !== 'production';
   const scriptSrc = isDev 
     ? `'self' 'unsafe-eval' 'unsafe-inline'`
@@ -34,7 +23,7 @@ export async function middleware(request) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('Content-Security-Policy', cspHeader);
 
-  // 3. CSRF Protection (Double Submit Cookie)
+  // 2. CSRF Protection (Double Submit Cookie)
   const methods = ['POST', 'PUT', 'DELETE', 'PATCH'];
   let response;
 
@@ -73,6 +62,26 @@ export async function middleware(request) {
 
   return response;
 }
+
+export default withAuth(
+  function middleware(request) {
+    return customMiddleware(request);
+  },
+  {
+    callbacks: {
+      authorized: ({ req, token }) => {
+        if (req.nextUrl.pathname.startsWith('/organiser')) {
+          return !!token;
+        }
+        return true;
+      },
+    },
+    pages: {
+      signIn: '/login',
+    },
+    secret: process.env.NEXTAUTH_SECRET,
+  }
+);
 
 export const config = {
   matcher: [
